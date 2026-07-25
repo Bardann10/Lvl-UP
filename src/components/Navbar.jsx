@@ -1,15 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: 'dashboard' },
+  { to: '/', label: 'Dashboard', icon: 'home' },
   { to: '/daily-goals', label: 'Daily Goals', icon: 'track_changes' },
-  { to: '/to-do-tasks', label: 'To-Do Tasks', icon: 'task_alt' },
-  { to: '/calendar', label: 'Calendar', icon: 'calendar_month' },
   { to: '/monthly-goals', label: 'Monthly Goals', icon: 'insights' },
   { to: '/yearly-goals', label: 'Yearly Goals', icon: 'military_tech' },
-  { to: '/statistics', label: 'Statistics', icon: 'bar_chart' },
-  { to: '/search', label: 'Search', icon: 'search' },
-  { to: '/settings', label: 'Settings', icon: 'settings' },
+  { to: '/calendar', label: 'Calendar', icon: 'calendar_month' },
 ]
 
 export function Navbar() {
@@ -17,19 +13,22 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-20 border-b border-white/10 bg-slate-950/90 backdrop-blur lg:hidden">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-white">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-5">
+          <Link to="/" className="flex items-center gap-2 text-base font-semibold text-white">
             <span className="rounded-2xl bg-sky-500/20 p-2 text-sky-400">
-              <span className="material-symbols-outlined">rocket_launch</span>
+              <span className="material-symbols-outlined text-lg">rocket_launch</span>
             </span>
-            Lvl-Up
+            <span>Lvl-Up</span>
           </Link>
-          <div className="rounded-full border border-white/10 bg-slate-900/70 px-3 py-1 text-sm text-slate-300">{location.pathname === '/' ? 'Home' : navItems.find((item) => item.to === location.pathname)?.label || 'Menu'}</div>
+          <Link to="/settings" className="rounded-full border border-white/10 bg-slate-900/70 p-2.5 text-slate-200 shadow-sm shadow-slate-950/30 transition hover:border-sky-400/50 hover:text-sky-300">
+            <span className="material-symbols-outlined">settings</span>
+          </Link>
         </div>
-      </nav>
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-slate-950/95 px-2 py-2 backdrop-blur lg:hidden">
-        <div className="mx-auto flex max-w-5xl justify-around">
+      </header>
+
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-slate-950/95 px-2 py-2 backdrop-blur-xl lg:hidden">
+        <div className="mx-auto flex max-w-5xl justify-around gap-1">
           {navItems.map((item) => {
             const active = location.pathname === item.to
             return (

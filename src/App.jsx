@@ -10,8 +10,6 @@ import { YearlyGoals } from './pages/YearlyGoals'
 import { Calendar } from './pages/Calendar'
 import { Search } from './pages/Search'
 import { Settings } from './pages/Settings'
-import { Statistics } from './pages/Statistics'
-import { Achievements } from './pages/Achievements'
 import { ToastProvider, useToast } from './components/ToastProvider'
 import { Fab } from './components/Fab'
 import { QuickAddModal } from './components/QuickAddModal'
@@ -52,6 +50,7 @@ function AppShell() {
   }
 
   const themeClass = data.theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+  const isDark = data.theme === 'dark'
 
   const addDailyGoalFromQuickAdd = (draft) => {
     setDailyGoals((current) => [
@@ -89,7 +88,7 @@ function AppShell() {
   return (
     <div className={`min-h-screen ${themeClass}`}>
       <Navbar />
-      <main className="mx-auto flex max-w-6xl gap-6 px-4 py-6 lg:px-6">
+      <main className="mx-auto flex max-w-6xl gap-6 px-3 pb-24 pt-6 sm:px-4 lg:px-6 lg:pb-6">
         <Sidebar>
           <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3 text-sm text-slate-300">
             <p className="font-semibold text-white">Today&apos;s focus</p>
@@ -98,16 +97,13 @@ function AppShell() {
         </Sidebar>
         <section className="flex-1">
           <Routes>
-            <Route path="/" element={<Dashboard dailyGoals={data.dailyGoals} tasks={data.tasks} monthlyGoals={data.monthlyGoals} yearlyGoals={data.yearlyGoals} />} />
-            <Route path="/daily-goals" element={<DailyTargets dailyGoals={data.dailyGoals} setDailyGoals={setDailyGoals} showToast={showToast} />} />
-            <Route path="/to-do-tasks" element={<ToDoTasks tasks={data.tasks} setTasks={setTasks} showToast={showToast} />} />
+            <Route path="/" element={<Dashboard dailyGoals={data.dailyGoals} tasks={data.tasks} monthlyGoals={data.monthlyGoals} yearlyGoals={data.yearlyGoals} achievements={data.achievements || []} setAchievements={setAchievements} />} />
+            <Route path="/daily-goals" element={<DailyTargets dailyGoals={data.dailyGoals} tasks={data.tasks} setDailyGoals={setDailyGoals} setTasks={setTasks} showToast={showToast} />} />
             <Route path="/monthly-goals" element={<MonthlyGoals monthlyGoals={data.monthlyGoals} setMonthlyGoals={setMonthlyGoals} showToast={showToast} />} />
             <Route path="/yearly-goals" element={<YearlyGoals yearlyGoals={data.yearlyGoals} setYearlyGoals={setYearlyGoals} showToast={showToast} />} />
-            <Route path="/calendar" element={<Calendar dailyGoals={data.dailyGoals} tasks={data.tasks} monthlyGoals={data.monthlyGoals} />} />
+            <Route path="/calendar" element={<Calendar dailyGoals={data.dailyGoals} tasks={data.tasks} />} />
             <Route path="/search" element={<Search dailyGoals={data.dailyGoals} tasks={data.tasks} monthlyGoals={data.monthlyGoals} yearlyGoals={data.yearlyGoals} />} />
             <Route path="/settings" element={<Settings data={data} setData={setData} saveData={(nextData) => saveAppData(nextData)} showToast={showToast} />} />
-            <Route path="/statistics" element={<Statistics habits={data.dailyGoals} goals={data.yearlyGoals} tasks={data.tasks} />} />
-            <Route path="/achievements" element={<Achievements dailyGoals={data.dailyGoals} achievements={data.achievements || []} setAchievements={setAchievements} />} />
           </Routes>
         </section>
       </main>

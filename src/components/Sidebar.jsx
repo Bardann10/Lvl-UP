@@ -1,15 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: 'dashboard' },
+  { to: '/', label: 'Dashboard', icon: 'home' },
   { to: '/daily-goals', label: 'Daily Goals', icon: 'track_changes' },
-  { to: '/to-do-tasks', label: 'To-Do Tasks', icon: 'task_alt' },
-  { to: '/calendar', label: 'Calendar', icon: 'calendar_month' },
   { to: '/monthly-goals', label: 'Monthly Goals', icon: 'insights' },
   { to: '/yearly-goals', label: 'Yearly Goals', icon: 'military_tech' },
-  { to: '/statistics', label: 'Statistics', icon: 'bar_chart' },
-  { to: '/search', label: 'Search', icon: 'search' },
-  { to: '/settings', label: 'Settings', icon: 'settings' },
+  { to: '/calendar', label: 'Calendar', icon: 'calendar_month' },
 ]
 
 export function Sidebar({ children }) {

@@ -18,6 +18,36 @@ export function Calendar({ dailyGoals, tasks }) {
   const selectedGoalCount = dailyGoals.length
   const selectedCompletionPercent = selectedGoalCount === 0 ? 0 : Math.round((selectedGoals.length / selectedGoalCount) * 100)
 
+  const weeklyCompletion = useMemo(() => {
+    const end = new Date()
+    const start = new Date()
+    start.setDate(end.getDate() - 6)
+    const completed = dailyGoals.filter((goal) => goal.completedDates.some((date) => {
+      const target = new Date(date)
+      return target >= start && target <= end
+    })).length
+    return dailyGoals.length === 0 ? 0 : Math.round((completed / dailyGoals.length) * 100)
+  }, [dailyGoals])
+
+  const monthlyCompletion = useMemo(() => {
+    const now = new Date()
+    const completed = dailyGoals.filter((goal) => goal.completedDates.some((date) => {
+      const target = new Date(date)
+      return target.getMonth() === now.getMonth() && target.getFullYear() === now.getFullYear()
+    })).length
+    return dailyGoals.length === 0 ? 0 : Math.round((completed / dailyGoals.length) * 100)
+  }, [dailyGoals])
+
+  const streaks = useMemo(() => dailyGoals.reduce((max, goal) => Math.max(max, goal.streak || 0), 0), [dailyGoals])
+
+  const trend = useMemo(() => Array.from({ length: 6 }, (_, index) => {
+    const date = new Date()
+    date.setDate(date.getDate() - (5 - index))
+    const key = toDateKey(date)
+    const completed = dailyGoals.filter((goal) => goal.completedDates.includes(key)).length
+    return { label: date.toLocaleDateString('en', { month: 'short', day: 'numeric' }), count: completed }
+  }), [dailyGoals])
+
   const changeMonth = (direction) => {
     setViewDate((current) => new Date(current.getFullYear(), current.getMonth() + direction, 1))
   }
@@ -59,6 +89,32 @@ export function Calendar({ dailyGoals, tasks }) {
             <p className="text-xl font-semibold text-white">{formatLongDate(selectedDate)}</p>
           </div>
           <div className="rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-sm text-slate-300">{selectedCompletionPercent}% completed</div>
+        </div>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-4">
+          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Weekly completion</p>
+            <p className="mt-2 text-lg font-semibold text-white">{weeklyCompletion}%</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Monthly completion</p>
+            <p className="mt-2 text-lg font-semibold text-white">{monthlyCompletion}%</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Streaks</p>
+            <p className="mt-2 text-lg font-semibold text-white">{streaks} days</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Trend</p>
+            <div className="mt-2 flex items-end gap-1">
+              {trend.map((point) => (
+                <div key={point.label} className="flex flex-1 flex-col items-center gap-1">
+                  <div className="w-full rounded-full bg-sky-400/70" style={{ height: `${Math.max(8, point.count * 10)}px` }} />
+                  <span className="text-[10px] text-slate-500">{point.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1fr]">

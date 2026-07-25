@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom'
 import { StatCard } from '../components/Cards'
 import { MonthCalendar } from '../components/MonthCalendar'
 import { ProgressRing } from '../components/ProgressCards'
+import { Achievements } from './Achievements'
 import { todayKey, getTodayLabel } from '../utils/date'
 
-export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
+export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achievements, setAchievements }) {
   const [viewDate] = useState(new Date())
   const completedHabitsToday = dailyGoals.filter((goal) => goal.completedDates.includes(todayKey())).length
   const completionPercent = Math.round((completedHabitsToday / Math.max(dailyGoals.length, 1)) * 100)
@@ -126,6 +127,10 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
           <p className="mt-3 text-lg font-semibold text-white">“{quote}”</p>
           <p className="mt-2 text-sm text-slate-500">Small wins compound into major momentum.</p>
         </div>
+      </div>
+
+      <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-4 shadow-xl shadow-slate-950/20 sm:p-5">
+        <Achievements dailyGoals={dailyGoals} achievements={achievements} setAchievements={setAchievements} />
       </div>
     </div>
   )

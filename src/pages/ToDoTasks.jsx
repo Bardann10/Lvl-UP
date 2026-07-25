@@ -5,7 +5,7 @@ import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { isPastDate, todayKey } from '../utils/date'
 
-export function ToDoTasks({ tasks, setTasks, showToast }) {
+export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const [selectedDate, setSelectedDate] = useState(todayKey())
   const [form, setForm] = useState({ title: '', description: '', date: todayKey(), reminderTime: '', priority: 'Medium', color: 'amber' })
   const [editingId, setEditingId] = useState(null)
@@ -52,7 +52,8 @@ export function ToDoTasks({ tasks, setTasks, showToast }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className={compact ? 'space-y-4 rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-4' : 'space-y-6'}>
+      {!compact && (
       <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
         <p className="text-sm text-slate-400">To-Do Tasks</p>
         <h2 className="text-2xl font-semibold text-white">Plan any day without affecting daily goals</h2>
@@ -85,6 +86,7 @@ export function ToDoTasks({ tasks, setTasks, showToast }) {
           </div>
         </form>
       </div>
+      )}
 
       <div className="flex items-center justify-between">
         <p className="text-sm text-slate-400">Tasks for {selectedDate}</p>

@@ -4,6 +4,7 @@ import { EmptyState } from '../components/EmptyState'
 import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { todayKey } from '../utils/date'
+import { ToDoTasks } from './ToDoTasks'
 
 const EMPTY_FORM = {
   title: '',
@@ -14,10 +15,11 @@ const EMPTY_FORM = {
   color: 'sky',
 }
 
-export function DailyTargets({ dailyGoals, setDailyGoals, showToast }) {
+export function DailyTargets({ dailyGoals, tasks, setDailyGoals, setTasks, showToast }) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [editingId, setEditingId] = useState(null)
   const [draggedId, setDraggedId] = useState(null)
+  const [activeTab, setActiveTab] = useState('tasks')
 
   const toggleGoal = (goalId) => {
     setDailyGoals((current) =>
@@ -97,17 +99,31 @@ export function DailyTargets({ dailyGoals, setDailyGoals, showToast }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
+    <div className="space-y-6 pb-24 lg:pb-6">
+      <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-sm text-slate-400">Daily Goals</p>
-            <h2 className="text-2xl font-semibold text-white">Recurring habits that keep your days on track</h2>
+            <h2 className="text-2xl font-semibold text-white">A calm place for habits and plans</h2>
           </div>
           <Button type="button" variant="secondary">{dailyGoals.length} goals</Button>
         </div>
 
-        <form onSubmit={addGoal} className="mt-5 space-y-3">
+        <div className="mt-5 flex rounded-full border border-white/10 bg-slate-950/70 p-1.5">
+          <button type="button" onClick={() => setActiveTab('tasks')} className={`flex-1 rounded-full px-3 py-2 text-sm font-medium transition ${activeTab === 'tasks' ? 'bg-sky-500 text-slate-950' : 'text-slate-300'}`}>
+            To-Do Tasks
+          </button>
+          <button type="button" onClick={() => setActiveTab('goals')} className={`flex-1 rounded-full px-3 py-2 text-sm font-medium transition ${activeTab === 'goals' ? 'bg-sky-500 text-slate-950' : 'text-slate-300'}`}>
+            Daily Goals
+          </button>
+        </div>
+
+        {activeTab === 'tasks' ? (
+          <div className="mt-5">
+            <ToDoTasks tasks={tasks || []} setTasks={setTasks} showToast={showToast} compact />
+          </div>
+        ) : (
+          <form onSubmit={addGoal} className="mt-5 space-y-3">
           <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="New goal" />
           <div className="grid gap-3 md:grid-cols-2">
             <input value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Category" />
@@ -127,9 +143,10 @@ export function DailyTargets({ dailyGoals, setDailyGoals, showToast }) {
             <Button type="submit">Add goal</Button>
           </div>
         </form>
+        )}
       </div>
 
-      {dailyGoals.length === 0 ? (
+      {activeTab === 'goals' && (dailyGoals.length === 0 ? (
         <EmptyState title="No daily goals yet" description="Create your first recurring habit and keep your streak alive." />
       ) : (
         <div className="grid gap-4">
@@ -193,7 +210,7 @@ export function DailyTargets({ dailyGoals, setDailyGoals, showToast }) {
             )
           })}
         </div>
-      )}
+      ))}
     </div>
   )
 }
