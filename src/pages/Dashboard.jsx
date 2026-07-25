@@ -1,9 +1,12 @@
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { StatCard } from '../components/Cards'
+import { MonthCalendar } from '../components/MonthCalendar'
 import { ProgressRing } from '../components/ProgressCards'
 import { todayKey, getTodayLabel } from '../utils/date'
 
 export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
+  const [viewDate] = useState(new Date())
   const completedHabitsToday = dailyGoals.filter((goal) => goal.completedDates.includes(todayKey())).length
   const completionPercent = Math.round((completedHabitsToday / Math.max(dailyGoals.length, 1)) * 100)
   const monthlyDone = monthlyGoals.filter((goal) => goal.completed).length
@@ -11,6 +14,8 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
   const activeStreak = dailyGoals.reduce((highest, goal) => Math.max(highest, goal.streak || 0), 0)
   const upcomingTasks = tasks.filter((task) => !task.completed).slice(0, 3)
   const quote = 'Consistency beats intensity when the work is repeated.'
+  const monthlyProgress = useMemo(() => Math.round((monthlyDone / Math.max(monthlyGoals.length, 1)) * 100), [monthlyDone, monthlyGoals.length])
+  const yearlyProgress = useMemo(() => Math.round((yearlyDone / Math.max(yearlyGoals.length, 1)) * 100), [yearlyDone, yearlyGoals.length])
 
   return (
     <div className="space-y-6">
@@ -67,6 +72,15 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
           <div className="flex items-center justify-between">
+            <p className="text-sm text-slate-400">Monthly calendar</p>
+            <Link to="/calendar" className="text-sm text-sky-400">Open calendar</Link>
+          </div>
+          <div className="mt-4">
+            <MonthCalendar dailyGoals={dailyGoals} selectedDate={todayKey()} onSelectDate={() => {}} viewDate={viewDate} compact />
+          </div>
+        </div>
+        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+          <div className="flex items-center justify-between">
             <p className="text-sm text-slate-400">Upcoming to-do tasks</p>
             <Link to="/to-do-tasks" className="text-sm text-sky-400">Open planner</Link>
           </div>
@@ -87,7 +101,28 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
           )}
         </div>
         <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-          <p className="text-sm text-slate-400">Quote of the day</p>
+          <p className="text-sm text-slate-400">Progress snapshot</p>
+          <div className="mt-4 space-y-3">
+            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
+              <div className="flex items-center justify-between text-sm text-slate-300">
+                <span>Monthly progress</span>
+                <span className="font-semibold text-white">{monthlyProgress}%</span>
+              </div>
+              <div className="mt-2 h-2 rounded-full bg-slate-800">
+                <div className="h-2 rounded-full bg-sky-400" style={{ width: `${monthlyProgress}%` }} />
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
+              <div className="flex items-center justify-between text-sm text-slate-300">
+                <span>Yearly progress</span>
+                <span className="font-semibold text-white">{yearlyProgress}%</span>
+              </div>
+              <div className="mt-2 h-2 rounded-full bg-slate-800">
+                <div className="h-2 rounded-full bg-violet-400" style={{ width: `${yearlyProgress}%` }} />
+              </div>
+            </div>
+          </div>
+          <p className="mt-4 text-sm text-slate-400">Quote of the day</p>
           <p className="mt-3 text-lg font-semibold text-white">“{quote}”</p>
           <p className="mt-2 text-sm text-slate-500">Small wins compound into major momentum.</p>
         </div>
