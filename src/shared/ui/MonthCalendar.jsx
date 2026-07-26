@@ -54,34 +54,34 @@ export function MonthCalendar({
 
   return (
     <div>
-      {showHeader && (
-        <div className="mb-3 flex items-center justify-between">
-          <p className="text-sm text-slate-400">Monthly view</p>
-          <p className="text-sm font-semibold text-slate-200">
+      {showHeader ? (
+        <div className="mb-4 flex items-center justify-between">
+          <p className="text-sm text-[var(--color-text-muted)]">Monthly view</p>
+          <p className="text-sm font-semibold text-[var(--color-text-primary)]">
             {viewDate.toLocaleDateString('en', { month: 'long', year: 'numeric' })}
           </p>
         </div>
-      )}
+      ) : null}
 
-      <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 sm:gap-2 sm:text-xs">
+      <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--color-text-muted)] sm:gap-2 sm:text-[0.72rem]">
         {dayNames.map((dayName) => (
-          <div key={dayName} className="py-1">
+          <div key={dayName} className="py-1.5">
             {dayName}
           </div>
         ))}
       </div>
 
-      <div className="mt-2 grid grid-cols-7 gap-1 sm:gap-2">
+      <div className="mt-2 grid grid-cols-7 gap-1.5 sm:gap-2">
         {days.map((cell) => {
           const dateKey = toDateKey(cell.date)
           const status = getDayStatus(dateKey, dailyGoals)
           const dayIsToday = dateKey === todayKey()
           const dayIsSelected = dateKey === selectedDate
           const indicatorClasses = {
-            green: 'bg-emerald-500',
+            green: 'bg-emerald-400',
             yellow: 'bg-amber-400',
-            red: 'bg-rose-500',
-            grey: 'bg-slate-700',
+            red: 'bg-rose-400',
+            grey: 'bg-slate-500/70',
           }[status]
 
           return (
@@ -91,18 +91,16 @@ export function MonthCalendar({
               onClick={() => onSelectDate?.(dateKey)}
               aria-label={dateKey}
               aria-pressed={dayIsSelected}
-              className={`flex min-h-[3rem] flex-col items-center justify-center rounded-2xl border px-1 py-2 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${
+              className={`group flex min-h-[3.6rem] flex-col items-center justify-center rounded-[1.2rem] border px-1 py-2.5 text-sm transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ring)] ${
                 cell.isCurrentMonth
-                  ? 'border-white/10 bg-slate-900/70 text-slate-100'
-                  : 'border-white/5 bg-slate-950/50 text-slate-500'
-              } ${dayIsSelected ? 'ring-2 ring-sky-400/70' : ''} ${compact ? 'min-h-[2.6rem] rounded-xl' : ''}`}
+                  ? 'border-[var(--color-border)] bg-[var(--color-surface-soft)] text-[var(--color-text-primary)]'
+                  : 'border-[var(--color-border)] bg-transparent text-[var(--color-text-muted)] opacity-70'
+              } ${dayIsSelected ? 'border-transparent bg-[var(--gradient-accent)] text-slate-950 shadow-[var(--shadow-soft)]' : ''} ${compact ? 'min-h-[3rem] rounded-[1rem]' : ''}`}
             >
-              <span className={`text-sm ${dayIsToday ? 'font-semibold text-sky-400' : 'font-medium'}`}>
+              <span className={`text-sm ${dayIsToday ? 'font-semibold' : 'font-medium'} ${dayIsSelected ? 'text-slate-950' : ''}`}>
                 {cell.date.getDate()}
               </span>
-              <span
-                className={`mt-2 h-2.5 w-2.5 rounded-full ${indicatorClasses} ${!cell.isCurrentMonth ? 'opacity-50' : ''}`}
-              />
+              <span className={`mt-2 h-2.5 w-2.5 rounded-full ${indicatorClasses} ${!cell.isCurrentMonth ? 'opacity-50' : ''} ${dayIsSelected ? 'bg-slate-950/80' : ''}`} />
             </button>
           )
         })}

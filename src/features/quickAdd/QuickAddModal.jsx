@@ -29,139 +29,163 @@ export function QuickAddModal({ open, onClose, onAddDailyGoal, onAddTask, showTo
     event.preventDefault()
     if (!taskForm.title.trim()) return
     onAddTask(taskForm)
-    setTaskForm({ title: '', description: '', date: new Date().toISOString().slice(0, 10), priority: 'Medium', color: 'violet' })
+    setTaskForm({
+      title: '',
+      description: '',
+      date: new Date().toISOString().slice(0, 10),
+      priority: 'Medium',
+      color: 'violet',
+    })
     onClose()
     showToast('Task added')
   }
 
   return (
     <Modal open={open} onClose={onClose} title={title}>
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-slate-400">Quick Add</p>
-          <h3 className="text-xl font-semibold text-white">{title}</h3>
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[var(--color-text-muted)]">
+            Quick Add
+          </p>
+          <h3 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">
+            {title}
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-[var(--color-text-tertiary)]">
+            Capture a habit or task in the same premium flow used across the planner.
+          </p>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close"
-          className="rounded-full bg-slate-800 px-3 py-2 text-slate-300 transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
-        >
+        <Button type="button" variant="ghost" onClick={onClose} className="px-3 py-2">
           Close
-        </button>
+        </Button>
       </div>
 
-      <div className="mt-4 flex gap-2">
-        <Button variant={mode === 'goal' ? 'primary' : 'secondary'} type="button" onClick={() => setMode('goal')}>
+      <div className="app-inset mt-5 flex gap-2 p-1.5">
+        <Button
+          variant={mode === 'goal' ? 'primary' : 'ghost'}
+          type="button"
+          className="flex-1"
+          onClick={() => setMode('goal')}
+        >
           Daily Goal
         </Button>
-        <Button variant={mode === 'task' ? 'primary' : 'secondary'} type="button" onClick={() => setMode('task')}>
+        <Button
+          variant={mode === 'task' ? 'primary' : 'ghost'}
+          type="button"
+          className="flex-1"
+          onClick={() => setMode('task')}
+        >
           To-Do
         </Button>
       </div>
 
       {mode === 'goal' ? (
-        <form onSubmit={handleGoalSave} className="mt-4 space-y-3">
-        <PlannerInput
+        <form onSubmit={handleGoalSave} className="mt-5 space-y-3">
+          <PlannerInput
             value={goalForm.title}
             onChange={(event) => setGoalForm({ ...goalForm, title: event.target.value })}
-          className="w-full"
+            className="w-full"
+            size="lg"
             placeholder="Goal title"
           />
           <div className="grid gap-3 md:grid-cols-2">
-          <PlannerInput
+            <PlannerInput
               value={goalForm.category}
               onChange={(event) => setGoalForm({ ...goalForm, category: event.target.value })}
-            className="w-full"
+              className="w-full"
               placeholder="Category"
             />
-          <PlannerInput
+            <PlannerInput
               value={goalForm.icon}
               onChange={(event) => setGoalForm({ ...goalForm, icon: event.target.value })}
-            className="w-full"
+              className="w-full"
               placeholder="Icon name"
             />
           </div>
-        <PlannerTextarea
+          <PlannerTextarea
             value={goalForm.notes}
             onChange={(event) => setGoalForm({ ...goalForm, notes: event.target.value })}
-          className="min-h-24 w-full"
+            className="min-h-28 w-full"
             placeholder="Notes"
           />
           <div className="grid gap-3 md:grid-cols-2">
-          <PlannerInput
+            <PlannerInput
               type="time"
               value={goalForm.reminderTime || ''}
               onChange={(event) => setGoalForm({ ...goalForm, reminderTime: event.target.value })}
-            className="w-full"
+              className="w-full"
             />
-          <PlannerSelect
+            <PlannerSelect
               value={goalForm.color}
               onChange={(event) => setGoalForm({ ...goalForm, color: event.target.value })}
-            className="w-full"
+              className="w-full"
             >
               <option value="sky">Sky</option>
               <option value="emerald">Emerald</option>
               <option value="violet">Violet</option>
               <option value="amber">Amber</option>
-          </PlannerSelect>
+            </PlannerSelect>
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="secondary" type="button" onClick={onClose}>Cancel</Button>
+            <Button variant="secondary" type="button" onClick={onClose}>
+              Cancel
+            </Button>
             <Button type="submit">Add goal</Button>
           </div>
         </form>
       ) : (
-        <form onSubmit={handleTaskSave} className="mt-4 space-y-3">
-        <PlannerInput
+        <form onSubmit={handleTaskSave} className="mt-5 space-y-3">
+          <PlannerInput
             value={taskForm.title}
             onChange={(event) => setTaskForm({ ...taskForm, title: event.target.value })}
-          className="w-full"
+            className="w-full"
+            size="lg"
             placeholder="Task title"
           />
-        <PlannerTextarea
+          <PlannerTextarea
             value={taskForm.description}
             onChange={(event) => setTaskForm({ ...taskForm, description: event.target.value })}
-          className="min-h-24 w-full"
+            className="min-h-28 w-full"
             placeholder="Task description"
           />
           <div className="grid gap-3 md:grid-cols-2">
-          <PlannerInput
+            <PlannerInput
               type="date"
               value={taskForm.date}
               onChange={(event) => setTaskForm({ ...taskForm, date: event.target.value })}
-            className="w-full"
+              className="w-full"
             />
-          <PlannerInput
+            <PlannerInput
               type="time"
               value={taskForm.reminderTime || ''}
               onChange={(event) => setTaskForm({ ...taskForm, reminderTime: event.target.value })}
-            className="w-full"
+              className="w-full"
             />
           </div>
           <div className="grid gap-3 md:grid-cols-2">
-          <PlannerSelect
+            <PlannerSelect
               value={taskForm.priority}
               onChange={(event) => setTaskForm({ ...taskForm, priority: event.target.value })}
-            className="w-full"
+              className="w-full"
             >
               <option value="High">High</option>
               <option value="Medium">Medium</option>
               <option value="Low">Low</option>
-          </PlannerSelect>
-          <PlannerSelect
+            </PlannerSelect>
+            <PlannerSelect
               value={taskForm.color}
               onChange={(event) => setTaskForm({ ...taskForm, color: event.target.value })}
-            className="w-full"
+              className="w-full"
             >
               <option value="sky">Sky</option>
               <option value="emerald">Emerald</option>
               <option value="violet">Violet</option>
               <option value="amber">Amber</option>
-          </PlannerSelect>
+            </PlannerSelect>
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="secondary" type="button" onClick={onClose}>Cancel</Button>
+            <Button variant="secondary" type="button" onClick={onClose}>
+              Cancel
+            </Button>
             <Button type="submit">Add task</Button>
           </div>
         </form>

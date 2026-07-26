@@ -2,22 +2,17 @@ import { Header } from './Header'
 import { Sidebar } from './Sidebar'
 import { BottomNav } from './BottomNav'
 
-/**
- * Layout – the application shell.
- *
- * Renders the sticky Header, desktop Sidebar, main content area,
- * and the mobile BottomNav. The `theme` prop toggles the global
- * light/dark surface colour.
- */
 export function Layout({ children, theme = 'dark' }) {
-  const themeClass =
-    theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
-
   return (
-    <div className={`min-h-screen ${themeClass}`}>
+    <div data-theme={theme} className="app-shell">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+        <div className="absolute left-[-8rem] top-[-6rem] h-72 w-72 rounded-full bg-sky-400/15 blur-3xl" />
+        <div className="absolute right-[-5rem] top-24 h-72 w-72 rounded-full bg-violet-400/15 blur-3xl" />
+      </div>
+
       <Header />
 
-      <main className="mx-auto flex max-w-6xl gap-6 px-3 pb-24 pt-6 sm:px-4 lg:px-6 lg:pb-6">
+      <main className="app-main">
         <Sidebar />
         <section className="min-w-0 flex-1">{children}</section>
       </main>

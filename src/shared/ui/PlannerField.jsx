@@ -1,10 +1,10 @@
 const BASE_FIELD_CLASSES =
-  'border border-white/10 bg-slate-950 text-white placeholder:text-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400'
+  'w-full rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-soft)] text-[var(--color-text-primary)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.04)] backdrop-blur-xl placeholder:text-[var(--color-text-muted)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ring)]'
 
 const SIZE_CLASSES = {
-  sm: 'rounded-2xl px-3 py-2',
-  md: 'rounded-2xl px-3 py-3',
-  lg: 'rounded-2xl px-4 py-3',
+  sm: 'px-3 py-2.5 text-sm',
+  md: 'px-4 py-3 text-sm sm:text-[0.95rem]',
+  lg: 'px-4 py-3.5 text-[0.95rem] sm:text-base',
 }
 
 function getFieldClassName(size, className = '') {

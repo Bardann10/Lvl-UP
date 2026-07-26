@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from '../shared/ui/Button'
 import { EmptyState } from '../shared/ui/EmptyState'
+import { PlannerInput } from '../shared/ui/PlannerField'
 import { createId } from '../services/storage'
 
 export function Today({ tasks, setTasks, showToast }) {
@@ -24,31 +25,31 @@ export function Today({ tasks, setTasks, showToast }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-slate-400">Today&apos;s Tasks</p>
-            <h2 className="text-2xl font-semibold text-white">A lightweight checklist for today only</h2>
-          </div>
+    <div className="page-shell">
+      <div className="app-panel p-5 sm:p-6">
+        <div>
+          <p className="text-sm text-[var(--color-text-muted)]">Today&apos;s Tasks</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-[var(--color-text-primary)]">A lightweight checklist for today only</h2>
         </div>
         <form onSubmit={addTask} className="mt-5 flex flex-col gap-3 sm:flex-row">
-          <input value={form} onChange={(event) => setForm(event.target.value)} className="flex-1 rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Add task for today" />
+          <PlannerInput value={form} onChange={(event) => setForm(event.target.value)} className="flex-1" placeholder="Add task for today" />
           <Button type="submit">Add task</Button>
         </form>
       </div>
 
       {tasks.length === 0 ? (
-        <EmptyState title="No tasks today" description="Capture things that matter for this day without affecting your long-term stats." />
+        <EmptyState title="No tasks today" description="Capture what matters for today without affecting your long-term stats." />
       ) : (
         <div className="grid gap-3">
           {tasks.map((task) => (
-            <div key={task.id} className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+            <div key={task.id} className="app-list-item flex items-center justify-between gap-3 p-4 sm:p-5">
               <div className="flex items-center gap-3">
-                <input type="checkbox" checked={task.done} onChange={() => toggleTask(task.id)} className="h-5 w-5 rounded border-slate-600 bg-slate-950" />
-                <p className={`text-lg ${task.done ? 'text-slate-500 line-through' : 'text-white'}`}>{task.title}</p>
+                <input type="checkbox" checked={task.done} onChange={() => toggleTask(task.id)} className="h-5 w-5 rounded border-[var(--color-border)] bg-transparent" />
+                <p className={`text-xl font-semibold tracking-[-0.03em] ${task.done ? 'text-[var(--color-text-muted)] line-through' : 'text-[var(--color-text-primary)]'}`}>{task.title}</p>
               </div>
-              <Button variant="ghost" type="button" onClick={() => deleteTask(task.id)}>Delete</Button>
+              <Button variant="ghost" type="button" onClick={() => deleteTask(task.id)}>
+                Delete
+              </Button>
             </div>
           ))}
         </div>

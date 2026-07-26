@@ -7,14 +7,19 @@ export function Sidebar() {
   return (
     <aside
       aria-label="Main navigation"
-      className="hidden w-72 shrink-0 rounded-[2rem] border border-white/10 bg-slate-900/75 p-4 shadow-2xl shadow-slate-950/30 lg:flex lg:flex-col"
+      className="app-panel-strong sticky top-28 hidden h-fit w-80 shrink-0 p-5 lg:flex lg:flex-col"
     >
-      <div className="rounded-[1.5rem] bg-gradient-to-br from-sky-500/20 to-violet-500/20 p-4">
-        <p className="text-sm text-slate-300">Focus mode</p>
-        <p className="mt-2 text-xl font-semibold text-white">Stay sharp. Build momentum.</p>
+      <div className="rounded-[calc(var(--radius-card)-0.2rem)] border border-[var(--color-border)] bg-[var(--gradient-hero)] p-5 shadow-[var(--shadow-soft)]">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-text-muted)]">Focus mode</p>
+        <p className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--color-text-primary)]">
+          Stay sharp. Build momentum.
+        </p>
+        <p className="mt-3 text-sm leading-6 text-[var(--color-text-tertiary)]">
+          Keep your goals visible, your tasks intentional, and your routines beautifully organized.
+        </p>
       </div>
 
-      <nav className="mt-5 space-y-2">
+      <nav className="mt-5 space-y-2.5">
         {NAV_ITEMS.map((item) => {
           const active = location.pathname === item.to
           return (
@@ -22,24 +27,26 @@ export function Sidebar() {
               key={item.to}
               to={item.to}
               aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${
+              className={`flex items-center gap-3 rounded-[var(--radius-lg)] px-4 py-3.5 text-sm font-medium transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ring)] ${
                 active
-                  ? 'bg-sky-500/15 text-sky-300 shadow-lg shadow-sky-500/10'
-                  : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                  ? 'border border-transparent bg-[var(--gradient-accent)] text-slate-950 shadow-[var(--shadow-float)]'
+                  : 'border border-[var(--color-border)] bg-[var(--color-surface-soft)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
               }`}
             >
-              <span className={`material-symbols-outlined ${active ? 'text-sky-300' : 'text-slate-400'}`}>
+              <span className={`material-symbols-outlined text-[20px] ${active ? 'text-slate-950' : 'text-[var(--color-accent)]'}`}>
                 {item.icon}
               </span>
-              <span className="font-medium">{item.label}</span>
+              <span>{item.label}</span>
             </Link>
           )
         })}
       </nav>
 
-      <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/70 p-3 text-sm text-slate-300">
-        <p className="font-semibold text-white">Today&apos;s focus</p>
-        <p className="mt-1">Keep your streak strong and your priorities clear.</p>
+      <div className="app-panel-soft mt-5 p-4">
+        <p className="text-sm font-semibold text-[var(--color-text-primary)]">Today&apos;s focus</p>
+        <p className="mt-2 text-sm leading-6 text-[var(--color-text-tertiary)]">
+          Protect your attention, finish the essentials, and let the streak compound.
+        </p>
       </div>
     </aside>
   )

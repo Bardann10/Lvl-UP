@@ -1,13 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-/**
- * Modal – accessible, focusable dialog overlay.
- *
- * - Traps focus within the dialog.
- * - Closes on ESC key or backdrop click.
- * - Returns focus to the triggering element on close.
- * - Renders bottom-sheet on mobile, centred on desktop.
- */
 export function Modal({ open, onClose, title, children, maxWidth = 'max-w-xl' }) {
   const overlayRef = useRef(null)
   const dialogRef = useRef(null)
@@ -16,8 +8,6 @@ export function Modal({ open, onClose, title, children, maxWidth = 'max-w-xl' })
     if (!open) return
 
     const previousFocus = document.activeElement
-
-    // Move focus into the dialog
     const firstFocusable = dialogRef.current?.querySelector(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     )
@@ -29,13 +19,12 @@ export function Modal({ open, onClose, title, children, maxWidth = 'max-w-xl' })
         return
       }
 
-      // Focus trap
       if (event.key === 'Tab') {
         const focusable = Array.from(
           dialogRef.current?.querySelectorAll(
             'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
           ) ?? [],
-        ).filter((el) => !el.disabled)
+        ).filter((element) => !element.disabled)
 
         if (focusable.length === 0) return
         const first = focusable[0]
@@ -71,7 +60,7 @@ export function Modal({ open, onClose, title, children, maxWidth = 'max-w-xl' })
     <div
       ref={overlayRef}
       role="presentation"
-      className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-950/70 p-4 backdrop-blur-sm sm:items-center"
+      className="fixed inset-0 z-[60] flex items-end justify-center bg-[rgb(8_15_30_/_0.72)] p-4 backdrop-blur-md sm:items-center"
       onClick={handleOverlayClick}
     >
       <div
@@ -79,7 +68,7 @@ export function Modal({ open, onClose, title, children, maxWidth = 'max-w-xl' })
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`w-full ${maxWidth} rounded-[2rem] border border-white/10 bg-slate-900 p-5 shadow-2xl shadow-slate-950/40`}
+        className={`app-panel-strong app-fade-in w-full ${maxWidth} p-5 sm:p-6`}
       >
         {children}
       </div>
