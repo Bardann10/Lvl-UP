@@ -1,21 +1,50 @@
 import { useMemo, useState } from 'react'
-import { Button } from '../components/Buttons'
-import { EmptyState } from '../components/EmptyState'
+import { Button } from '../shared/ui/Button'
+import { EmptyState } from '../shared/ui/EmptyState'
+import { PageHeader } from '../shared/ui/PageHeader'
+import { PlannerInput, PlannerSelect, PlannerTextarea } from '../shared/ui/PlannerField'
 import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { isPastDate, todayKey } from '../utils/date'
+import { MS_PER_DAY } from '../utils/constants'
 
 export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const [selectedDate, setSelectedDate] = useState(todayKey())
-  const [form, setForm] = useState({ title: '', description: '', date: todayKey(), reminderTime: '', priority: 'Medium', color: 'amber' })
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    date: todayKey(),
+    reminderTime: '',
+    priority: 'Medium',
+    color: 'amber',
+  })
   const [editingId, setEditingId] = useState(null)
+  const [dateGenerationTimestamp] = useState(() => Date.now())
 
   const visibleTasks = useMemo(() => tasks.filter((task) => task.date === selectedDate), [selectedDate, tasks])
+
+  const quickDateOptions = useMemo(
+    () => [
+      todayKey(),
+      new Date(dateGenerationTimestamp + MS_PER_DAY).toISOString().slice(0, 10),
+      new Date(dateGenerationTimestamp + 2 * MS_PER_DAY).toISOString().slice(0, 10),
+    ],
+    [dateGenerationTimestamp],
+  )
 
   const addTask = (event) => {
     event.preventDefault()
     if (!form.title.trim()) return
-    const nextTask = { id: createId('task'), title: form.title.trim(), description: form.description.trim(), date: form.date, reminderTime: form.reminderTime, priority: form.priority, color: form.color, completed: false }
+    const nextTask = {
+      id: createId('task'),
+      title: form.title.trim(),
+      description: form.description.trim(),
+      date: form.date,
+      reminderTime: form.reminderTime,
+      priority: form.priority,
+      color: form.color,
+      completed: false,
+    }
     setTasks((current) => [...current, nextTask])
     if (nextTask.reminderTime) {
       scheduleReminder(`Reminder for ${nextTask.title} on ${nextTask.date} at ${nextTask.reminderTime}`, 'task')
@@ -26,7 +55,21 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
 
   const saveEdit = (taskId) => {
     if (!form.title.trim()) return
-    setTasks((current) => current.map((task) => (task.id === taskId ? { ...task, title: form.title.trim(), description: form.description.trim(), date: form.date, reminderTime: form.reminderTime, priority: form.priority, color: form.color } : task)))
+    setTasks((current) =>
+      current.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              title: form.title.trim(),
+              description: form.description.trim(),
+              date: form.date,
+              reminderTime: form.reminderTime,
+              priority: form.priority,
+              color: form.color,
+            }
+          : task,
+      ),
+    )
     setEditingId(null)
     setForm({ title: '', description: '', date: selectedDate, reminderTime: '', priority: 'Medium', color: 'amber' })
     showToast('Task updated')
@@ -43,7 +86,14 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
 
   const startEdit = (task) => {
     setEditingId(task.id)
-    setForm({ title: task.title, description: task.description, date: task.date, reminderTime: task.reminderTime, priority: task.priority, color: task.color })
+    setForm({
+      title: task.title,
+      description: task.description,
+      date: task.date,
+      reminderTime: task.reminderTime,
+      priority: task.priority,
+      color: task.color,
+    })
   }
 
   const clearCompleted = () => {
@@ -52,92 +102,196 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   }
 
   return (
-    <div className={compact ? 'space-y-4 rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-4' : 'space-y-6'}>
-      {!compact && (
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">To-Do Tasks</p>
-        <h2 className="text-2xl font-semibold text-white">Plan any day without affecting daily goals</h2>
-        <div className="mt-4 flex flex-wrap gap-3">
-          {[todayKey(), new Date(Date.now() + 86400000).toISOString().slice(0, 10), new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 10)].map((date) => (
-            <button key={date} type="button" onClick={() => setSelectedDate(date)} className={`rounded-full px-3 py-2 text-sm ${selectedDate === date ? 'bg-sky-500 text-slate-950' : 'bg-slate-800 text-slate-300'}`}>{date}</button>
-          ))}
-          <input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} className="rounded-full border border-white/10 bg-slate-800 px-3 py-2 text-sm text-white" />
-        </div>
-        <form onSubmit={addTask} className="mt-4 space-y-3">
-          <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" placeholder="Task title" />
-          <textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" placeholder="Task description" />
-          <div className="grid gap-3 md:grid-cols-3">
-            <input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" />
-            <input type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" />
-            <select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white">
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
+    <div className={compact ? 'app-panel-soft space-y-4 p-4 sm:p-5' : 'page-shell'}>
+      {!compact ? (
+        <>
+          <PageHeader
+            eyebrow="To-Do Tasks"
+            title="Plan each day with clarity"
+            subtitle="Organize one-off tasks separately from your recurring habits in the same calm workspace."
+          />
+          <div className="app-panel p-5 sm:p-6">
+            <div className="flex flex-wrap gap-3">
+              {quickDateOptions.map((date) => (
+                <button
+                  key={date}
+                  type="button"
+                  onClick={() => setSelectedDate(date)}
+                  className={`rounded-full px-4 py-2.5 text-sm font-semibold ${
+                    selectedDate === date
+                      ? 'app-chip app-chip-active'
+                      : 'app-chip hover:-translate-y-0.5 hover:text-[var(--color-text-primary)]'
+                  }`}
+                >
+                  {date}
+                </button>
+              ))}
+              <PlannerInput
+                type="date"
+                value={selectedDate}
+                onChange={(event) => setSelectedDate(event.target.value)}
+                className="w-full sm:max-w-[13rem]"
+              />
+            </div>
+            <form onSubmit={addTask} className="mt-5 space-y-3">
+              <PlannerInput
+                value={form.title}
+                onChange={(event) => setForm({ ...form, title: event.target.value })}
+                className="w-full"
+                size="lg"
+                placeholder="Task title"
+              />
+              <PlannerTextarea
+                value={form.description}
+                onChange={(event) => setForm({ ...form, description: event.target.value })}
+                className="min-h-28 w-full"
+                placeholder="Task description"
+              />
+              <div className="grid gap-3 md:grid-cols-3">
+                <PlannerInput type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} />
+                <PlannerInput
+                  type="time"
+                  value={form.reminderTime}
+                  onChange={(event) => setForm({ ...form, reminderTime: event.target.value })}
+                />
+                <PlannerSelect value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value })}>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </PlannerSelect>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <PlannerSelect
+                  value={form.color}
+                  onChange={(event) => setForm({ ...form, color: event.target.value })}
+                  className="sm:max-w-[12rem]"
+                >
+                  <option value="amber">Amber</option>
+                  <option value="emerald">Emerald</option>
+                  <option value="violet">Violet</option>
+                  <option value="sky">Sky</option>
+                </PlannerSelect>
+                <Button type="submit" className="sm:min-w-[8rem]">
+                  Add task
+                </Button>
+              </div>
+            </form>
           </div>
-          <div className="flex items-center justify-between">
-            <select value={form.color} onChange={(event) => setForm({ ...form, color: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white">
-              <option value="amber">Amber</option>
-              <option value="emerald">Emerald</option>
-              <option value="violet">Violet</option>
-              <option value="sky">Sky</option>
-            </select>
-            <Button type="submit">Add task</Button>
-          </div>
-        </form>
-      </div>
-      )}
+        </>
+      ) : null}
 
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-400">Tasks for {selectedDate}</p>
-        <Button variant="secondary" type="button" onClick={clearCompleted}>Clear past completed</Button>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-text-muted)]">Schedule</p>
+          <p className="mt-1 text-lg font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">Tasks for {selectedDate}</p>
+        </div>
+        <Button variant="secondary" type="button" onClick={clearCompleted}>
+          Clear past completed
+        </Button>
       </div>
 
       {visibleTasks.length === 0 ? (
-        <EmptyState title="No tasks for this day" description="Create a plan for this date and keep it separate from habits." />
+        <EmptyState title="No tasks for this day" description="Create a focused plan for this date and keep it separate from your daily habits." />
       ) : (
         <div className="grid gap-3">
           {visibleTasks.map((task) => {
             const isEditing = editingId === task.id
             return (
-              <div key={task.id} className={`rounded-3xl border border-white/10 bg-slate-900/70 p-4 ${task.completed ? 'opacity-70' : ''}`}>
-                <div className="flex items-start justify-between gap-3">
+              <div key={task.id} className={`app-list-item p-4 sm:p-5 ${task.completed ? 'opacity-75' : ''}`}>
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="flex gap-3">
-                    <input type="checkbox" checked={task.completed} onChange={() => toggleTask(task.id)} className="mt-1 h-5 w-5 rounded border-slate-600 bg-slate-950" />
-                    <div>
+                    <input
+                      type="checkbox"
+                      checked={task.completed}
+                      onChange={() => toggleTask(task.id)}
+                      className="mt-1 h-5 w-5 rounded border-[var(--color-border)] bg-transparent"
+                    />
+                    <div className="min-w-0 flex-1">
                       {isEditing ? (
-                        <div className="space-y-2">
-                          <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
-                          <textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} className="min-h-20 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
+                        <div className="space-y-2.5">
+                          <PlannerInput
+                            value={form.title}
+                            onChange={(event) => setForm({ ...form, title: event.target.value })}
+                            className="w-full"
+                            size="sm"
+                          />
+                          <PlannerTextarea
+                            value={form.description}
+                            onChange={(event) => setForm({ ...form, description: event.target.value })}
+                            className="min-h-20 w-full"
+                            size="sm"
+                          />
                           <div className="grid gap-2 md:grid-cols-2">
-                            <input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
-                            <input type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
+                            <PlannerInput
+                              type="date"
+                              value={form.date}
+                              onChange={(event) => setForm({ ...form, date: event.target.value })}
+                              size="sm"
+                            />
+                            <PlannerInput
+                              type="time"
+                              value={form.reminderTime}
+                              onChange={(event) => setForm({ ...form, reminderTime: event.target.value })}
+                              size="sm"
+                            />
                           </div>
                         </div>
                       ) : (
                         <>
-                          <p className={`text-lg font-semibold ${task.completed ? 'text-slate-500 line-through' : 'text-white'}`}>{task.title}</p>
-                          <p className="mt-1 text-sm text-slate-400">{task.description}</p>
-                          <p className="mt-2 text-sm text-slate-500">{task.priority} • {task.reminderTime || 'No reminder'}</p>
+                          <p
+                            className={`text-xl font-semibold tracking-[-0.03em] ${
+                              task.completed ? 'text-[var(--color-text-muted)] line-through' : 'text-[var(--color-text-primary)]'
+                            }`}
+                          >
+                            {task.title}
+                          </p>
+                          <p className="mt-2 text-sm leading-6 text-[var(--color-text-tertiary)]">{task.description}</p>
+                          <p className="mt-3 text-sm text-[var(--color-text-muted)]">
+                            {task.priority} • {task.reminderTime || 'No reminder'}
+                          </p>
                         </>
                       )}
                     </div>
                   </div>
-                  <div className="text-right text-sm text-slate-400">
-                    <p>{task.priority}</p>
-                    <p className="mt-1 text-white">{task.date}</p>
+                  <div className="flex flex-col items-start gap-2 lg:items-end">
+                    <span className="app-chip px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em]">
+                      {task.priority}
+                    </span>
+                    <p className="text-sm text-[var(--color-text-tertiary)]">{task.date}</p>
                   </div>
                 </div>
-                <div className="mt-4 flex flex-wrap justify-end gap-2">
+                <div className="mt-5 flex flex-wrap justify-end gap-2">
                   {isEditing ? (
                     <>
-                      <Button variant="secondary" type="button" onClick={() => saveEdit(task.id)}>Save</Button>
-                      <Button variant="ghost" type="button" onClick={() => { setEditingId(null); setForm({ title: '', description: '', date: selectedDate, reminderTime: '', priority: 'Medium', color: 'amber' }) }}>Cancel</Button>
+                      <Button variant="secondary" type="button" onClick={() => saveEdit(task.id)}>
+                        Save
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        type="button"
+                        onClick={() => {
+                          setEditingId(null)
+                          setForm({
+                            title: '',
+                            description: '',
+                            date: selectedDate,
+                            reminderTime: '',
+                            priority: 'Medium',
+                            color: 'amber',
+                          })
+                        }}
+                      >
+                        Cancel
+                      </Button>
                     </>
                   ) : (
                     <>
-                      <Button variant="ghost" type="button" onClick={() => startEdit(task)}>Edit</Button>
-                      <Button variant="ghost" type="button" onClick={() => deleteTask(task.id)}>Delete</Button>
+                      <Button variant="ghost" type="button" onClick={() => startEdit(task)}>
+                        Edit
+                      </Button>
+                      <Button variant="ghost" type="button" onClick={() => deleteTask(task.id)}>
+                        Delete
+                      </Button>
                     </>
                   )}
                 </div>

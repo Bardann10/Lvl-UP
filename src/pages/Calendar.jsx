@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { MonthCalendar } from '../components/MonthCalendar'
+import { MonthCalendar } from '../shared/ui/MonthCalendar'
+import { PageHeader } from '../shared/ui/PageHeader'
 import { formatLongDate, todayKey } from '../utils/date'
 
 function toDateKey(date) {
@@ -22,31 +23,39 @@ export function Calendar({ dailyGoals, tasks }) {
     const end = new Date()
     const start = new Date()
     start.setDate(end.getDate() - 6)
-    const completed = dailyGoals.filter((goal) => goal.completedDates.some((date) => {
-      const target = new Date(date)
-      return target >= start && target <= end
-    })).length
+    const completed = dailyGoals.filter((goal) =>
+      goal.completedDates.some((date) => {
+        const target = new Date(date)
+        return target >= start && target <= end
+      }),
+    ).length
     return dailyGoals.length === 0 ? 0 : Math.round((completed / dailyGoals.length) * 100)
   }, [dailyGoals])
 
   const monthlyCompletion = useMemo(() => {
     const now = new Date()
-    const completed = dailyGoals.filter((goal) => goal.completedDates.some((date) => {
-      const target = new Date(date)
-      return target.getMonth() === now.getMonth() && target.getFullYear() === now.getFullYear()
-    })).length
+    const completed = dailyGoals.filter((goal) =>
+      goal.completedDates.some((date) => {
+        const target = new Date(date)
+        return target.getMonth() === now.getMonth() && target.getFullYear() === now.getFullYear()
+      }),
+    ).length
     return dailyGoals.length === 0 ? 0 : Math.round((completed / dailyGoals.length) * 100)
   }, [dailyGoals])
 
   const streaks = useMemo(() => dailyGoals.reduce((max, goal) => Math.max(max, goal.streak || 0), 0), [dailyGoals])
 
-  const trend = useMemo(() => Array.from({ length: 6 }, (_, index) => {
-    const date = new Date()
-    date.setDate(date.getDate() - (5 - index))
-    const key = toDateKey(date)
-    const completed = dailyGoals.filter((goal) => goal.completedDates.includes(key)).length
-    return { label: date.toLocaleDateString('en', { month: 'short', day: 'numeric' }), count: completed }
-  }), [dailyGoals])
+  const trend = useMemo(
+    () =>
+      Array.from({ length: 6 }, (_, index) => {
+        const date = new Date()
+        date.setDate(date.getDate() - (5 - index))
+        const key = toDateKey(date)
+        const completed = dailyGoals.filter((goal) => goal.completedDates.includes(key)).length
+        return { label: date.toLocaleDateString('en', { month: 'short', day: 'numeric' }), count: completed }
+      }),
+    [dailyGoals],
+  )
 
   const changeMonth = (direction) => {
     setViewDate((current) => new Date(current.getFullYear(), current.getMonth() + direction, 1))
@@ -59,22 +68,19 @@ export function Calendar({ dailyGoals, tasks }) {
   }
 
   return (
-    <div className="space-y-6 pb-24 lg:pb-6">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-        <p className="text-sm text-slate-400">Calendar</p>
-        <h2 className="text-2xl font-semibold text-white">Monthly overview</h2>
-      </div>
+    <div className="page-shell">
+      <PageHeader eyebrow="Calendar" title="Monthly overview" subtitle="See routines, tasks, and momentum in one elegant calendar view." />
 
-      <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-4 shadow-xl shadow-slate-950/20 sm:p-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="app-panel p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm text-slate-400">{viewDate.toLocaleDateString('en', { month: 'long', year: 'numeric' })}</p>
-            <p className="text-xl font-semibold text-white">Plan your momentum</p>
+            <p className="text-sm text-[var(--color-text-muted)]">{viewDate.toLocaleDateString('en', { month: 'long', year: 'numeric' })}</p>
+            <p className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">Plan your momentum</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => changeMonth(-1)} className="rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-sm text-slate-200">Previous</button>
-            <button type="button" onClick={jumpToToday} className="rounded-full bg-sky-500 px-3 py-2 text-sm font-semibold text-slate-950">Today</button>
-            <button type="button" onClick={() => changeMonth(1)} className="rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-sm text-slate-200">Next</button>
+            <CalendarNavButton onClick={() => changeMonth(-1)} label="Previous" />
+            <CalendarNavButton onClick={jumpToToday} label="Today" active />
+            <CalendarNavButton onClick={() => changeMonth(1)} label="Next" />
           </div>
         </div>
         <div className="mt-5">
@@ -82,57 +88,55 @@ export function Calendar({ dailyGoals, tasks }) {
         </div>
       </div>
 
-      <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+      <div className="app-panel p-5 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm text-slate-400">Selected day</p>
-            <p className="text-xl font-semibold text-white">{formatLongDate(selectedDate)}</p>
+            <p className="text-sm text-[var(--color-text-muted)]">Selected day</p>
+            <p className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">{formatLongDate(selectedDate)}</p>
           </div>
-          <div className="rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-sm text-slate-300">{selectedCompletionPercent}% completed</div>
+          <div className="app-chip px-4 py-2.5 text-sm font-semibold">{selectedCompletionPercent}% completed</div>
         </div>
 
         <div className="mt-5 grid gap-3 md:grid-cols-4">
-          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Weekly completion</p>
-            <p className="mt-2 text-lg font-semibold text-white">{weeklyCompletion}%</p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Monthly completion</p>
-            <p className="mt-2 text-lg font-semibold text-white">{monthlyCompletion}%</p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Streaks</p>
-            <p className="mt-2 text-lg font-semibold text-white">{streaks} days</p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Trend</p>
-            <div className="mt-2 flex items-end gap-1">
+          {[
+            ['Weekly completion', `${weeklyCompletion}%`],
+            ['Monthly completion', `${monthlyCompletion}%`],
+            ['Streaks', `${streaks} days`],
+          ].map(([label, value]) => (
+            <div key={label} className="app-list-item p-4">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-muted)]">{label}</p>
+              <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">{value}</p>
+            </div>
+          ))}
+          <div className="app-list-item p-4">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-text-muted)]">Trend</p>
+            <div className="mt-3 flex items-end gap-1.5">
               {trend.map((point) => (
-                <div key={point.label} className="flex flex-1 flex-col items-center gap-1">
-                  <div className="w-full rounded-full bg-sky-400/70" style={{ height: `${Math.max(8, point.count * 10)}px` }} />
-                  <span className="text-[10px] text-slate-500">{point.label}</span>
+                <div key={point.label} className="flex flex-1 flex-col items-center gap-1.5">
+                  <div className="w-full rounded-full bg-[var(--color-accent-soft)]" style={{ height: `${Math.max(10, point.count * 10)}px` }} />
+                  <span className="text-[10px] text-[var(--color-text-muted)]">{point.label}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1fr]">
-          <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-4">
-            <p className="text-sm font-semibold text-white">Daily goals</p>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          <div className="app-list-item p-4 sm:p-5">
+            <p className="text-lg font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">Daily goals</p>
             {dailyGoals.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">No daily goals yet for this day.</p>
+              <p className="mt-3 text-sm leading-6 text-[var(--color-text-tertiary)]">No daily goals yet for this day.</p>
             ) : (
-              <div className="mt-3 space-y-2">
+              <div className="mt-3 space-y-2.5">
                 {dailyGoals.map((goal) => {
                   const completed = goal.completedDates.includes(selectedDate)
                   return (
-                    <div key={goal.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/60 px-3 py-3">
+                    <div key={goal.id} className="app-inset flex items-center justify-between gap-3 px-3 py-3.5">
                       <div>
-                        <p className="text-sm font-medium text-slate-100">{goal.title}</p>
-                        <p className="text-xs text-slate-400">{goal.category}</p>
+                        <p className="text-sm font-semibold text-[var(--color-text-primary)]">{goal.title}</p>
+                        <p className="text-xs text-[var(--color-text-tertiary)]">{goal.category}</p>
                       </div>
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${completed ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-800 text-slate-300'}`}>
+                      <span className={`rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] ${completed ? 'bg-[var(--color-success-soft)] text-[var(--color-success)]' : 'bg-[var(--color-surface-soft)] text-[var(--color-text-secondary)]'}`}>
                         {completed ? 'Completed' : 'Pending'}
                       </span>
                     </div>
@@ -142,21 +146,21 @@ export function Calendar({ dailyGoals, tasks }) {
             )}
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-4">
-            <p className="text-sm font-semibold text-white">To-do tasks</p>
+          <div className="app-list-item p-4 sm:p-5">
+            <p className="text-lg font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">To-do tasks</p>
             {selectedTasks.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">No tasks scheduled for this day.</p>
+              <p className="mt-3 text-sm leading-6 text-[var(--color-text-tertiary)]">No tasks scheduled for this day.</p>
             ) : (
-              <div className="mt-3 space-y-2">
+              <div className="mt-3 space-y-2.5">
                 {selectedTasks.map((task) => (
-                  <div key={task.id} className="rounded-2xl border border-white/10 bg-slate-900/60 px-3 py-3">
+                  <div key={task.id} className="app-inset px-3 py-3.5">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-slate-100">{task.title}</p>
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.completed ? 'bg-emerald-500/15 text-emerald-300' : 'bg-amber-500/15 text-amber-300'}`}>
+                      <p className="text-sm font-semibold text-[var(--color-text-primary)]">{task.title}</p>
+                      <span className={`rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] ${task.completed ? 'bg-[var(--color-success-soft)] text-[var(--color-success)]' : 'bg-[var(--color-warning-soft)] text-[var(--color-warning)]'}`}>
                         {task.completed ? 'Done' : 'Planned'}
                       </span>
                     </div>
-                    {task.description && <p className="mt-1 text-xs text-slate-400">{task.description}</p>}
+                    {task.description ? <p className="mt-2 text-xs leading-5 text-[var(--color-text-tertiary)]">{task.description}</p> : null}
                   </div>
                 ))}
               </div>
@@ -165,5 +169,19 @@ export function Calendar({ dailyGoals, tasks }) {
         </div>
       </div>
     </div>
+  )
+}
+
+function CalendarNavButton({ onClick, label, active = false }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-4 py-2.5 text-sm font-semibold ${
+        active ? 'app-chip app-chip-active' : 'app-chip hover:-translate-y-0.5 hover:text-[var(--color-text-primary)]'
+      }`}
+    >
+      {label}
+    </button>
   )
 }

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { createId } from '../services/storage'
+import { useEffect, useMemo } from 'react'
+import { PageHeader } from '../shared/ui/PageHeader'
 
 const ACHIEVEMENTS = [
   { id: 'first-goal', title: 'First Goal Completed', description: 'Complete your first daily goal.', threshold: 1, icon: 'emoji_events' },
@@ -12,9 +12,7 @@ const ACHIEVEMENTS = [
   { id: 'goals-1000', title: '1000 Goals Completed', description: 'Complete 1000 goals in total.', threshold: 1000, icon: 'task_alt' },
 ]
 
-export function Achievements({ dailyGoals, achievements, setAchievements }) {
-  const [justUnlocked, setJustUnlocked] = useState([])
-
+export function Achievements({ dailyGoals, achievements, setAchievements, compact = false }) {
   const completedCount = useMemo(() => dailyGoals.reduce((count, goal) => count + goal.completedDates.length, 0), [dailyGoals])
   const longestStreak = useMemo(() => dailyGoals.reduce((max, goal) => Math.max(max, goal.streak || 0), 0), [dailyGoals])
 
@@ -37,40 +35,51 @@ export function Achievements({ dailyGoals, achievements, setAchievements }) {
         (achievement.id === 'goals-1000' && completedCount >= 1000)
 
       if (qualifies) {
-        nextUnlocked.push({ id: achievement.id, title: achievement.title, description: achievement.description, icon: achievement.icon, unlockedAt: new Date().toISOString() })
+        nextUnlocked.push({
+          id: achievement.id,
+          title: achievement.title,
+          description: achievement.description,
+          icon: achievement.icon,
+          unlockedAt: new Date().toISOString(),
+        })
       }
     }
 
     if (nextUnlocked.length > 0) {
       setAchievements((current) => [...current, ...nextUnlocked.filter((item) => !current.some((existing) => existing.id === item.id))])
-      setJustUnlocked(nextUnlocked.map((item) => item.id))
     }
   }, [achievements, completedCount, longestStreak, setAchievements])
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Achievements</p>
-        <h2 className="text-2xl font-semibold text-white">Badges for your consistency</h2>
-      </div>
+    <div className={compact ? 'space-y-4' : 'page-shell'}>
+      <PageHeader
+        eyebrow="Achievements"
+        title="Badges for your consistency"
+        subtitle="Celebrate streaks and milestones with polished cards that feel at home everywhere in the app."
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
         {ACHIEVEMENTS.map((achievement) => {
-          const unlocked = (achievements || []).some((item) => item.id === achievement.id)
-          const isNew = justUnlocked.includes(achievement.id)
+          const unlockedAchievement = (achievements || []).find((item) => item.id === achievement.id)
+          const unlocked = Boolean(unlockedAchievement)
           return (
-            <div key={achievement.id} className={`rounded-3xl border p-4 transition ${unlocked ? 'border-emerald-400/40 bg-emerald-500/10' : 'border-white/10 bg-slate-900/70'} ${isNew ? 'animate-pulse' : ''}`}>
-              <div className="flex items-center justify-between">
+            <div
+              key={achievement.id}
+              className={`app-list-item p-5 ${unlocked ? 'border-[var(--color-success-soft)] bg-[var(--color-success-soft)]' : ''}`}
+            >
+              <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className={`rounded-2xl p-2 ${unlocked ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-300'}`}>
-                    <span className="material-symbols-outlined">{achievement.icon}</span>
+                  <div className={`flex h-12 w-12 items-center justify-center rounded-[var(--radius-lg)] ${unlocked ? 'bg-[var(--color-success-soft)] text-[var(--color-success)]' : 'bg-[var(--color-surface-soft)] text-[var(--color-text-secondary)]'}`}>
+                    <span className="material-symbols-outlined text-[22px]">{achievement.icon}</span>
                   </div>
                   <div>
-                    <p className="font-semibold text-white">{achievement.title}</p>
-                    <p className="text-sm text-slate-400">{achievement.description}</p>
+                    <p className="font-semibold text-[var(--color-text-primary)]">{achievement.title}</p>
+                    <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">{achievement.description}</p>
                   </div>
                 </div>
-                {unlocked ? <span className="text-sm text-emerald-300">Unlocked</span> : <span className="text-sm text-slate-500">Locked</span>}
+                <span className={`text-xs font-semibold uppercase tracking-[0.22em] ${unlocked ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`}>
+                  {unlocked ? 'Unlocked' : 'Locked'}
+                </span>
               </div>
             </div>
           )

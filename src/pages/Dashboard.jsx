@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { StatCard } from '../components/Cards'
-import { MonthCalendar } from '../components/MonthCalendar'
-import { ProgressRing } from '../components/ProgressCards'
+import { StatCard } from '../shared/ui/Card'
+import { MonthCalendar } from '../shared/ui/MonthCalendar'
+import { ProgressRing } from '../shared/ui/ProgressRing'
 import { Achievements } from './Achievements'
 import { todayKey, getTodayLabel } from '../utils/date'
+import { ROUTES } from '../app/router'
 
 export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achievements, setAchievements }) {
   const [viewDate] = useState(new Date())
@@ -19,25 +20,37 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achiev
   const yearlyProgress = useMemo(() => Math.round((yearlyDone / Math.max(yearlyGoals.length, 1)) * 100), [yearlyDone, yearlyGoals.length])
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-sky-500/20 via-slate-900 to-violet-500/20 p-6 shadow-2xl shadow-slate-950/30">
-        <p className="text-sm uppercase tracking-[0.3em] text-sky-400">Welcome back</p>
-        <h1 className="mt-2 text-3xl font-semibold text-white">Level up your daily momentum.</h1>
-        <p className="mt-3 max-w-2xl text-slate-300">{getTodayLabel()} is your reset point. Keep the streak alive and stay consistent.</p>
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Link to="/daily-goals" className="rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950">View Daily Goals</Link>
-          <Link to="/achievements" className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-slate-200">See achievements</Link>
+    <div className="page-shell">
+      <div className="app-hero p-6 sm:p-8">
+        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[var(--color-accent)]">Welcome back</p>
+        <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-[-0.05em] text-[var(--color-text-primary)] sm:text-[3.4rem]">
+          Level up your daily momentum.
+        </h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--color-text-secondary)]">
+          {getTodayLabel()} is your reset point. Keep the streak alive, stay focused, and move through your planner with the feel of a polished productivity studio.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link to={ROUTES.DAILY_GOALS} className="app-chip app-chip-active px-5 py-3 text-sm font-semibold">
+            View Daily Goals
+          </Link>
+          <Link to={ROUTES.ACHIEVEMENTS} className="app-chip px-5 py-3 text-sm font-semibold hover:-translate-y-0.5 hover:text-[var(--color-text-primary)]">
+            See achievements
+          </Link>
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-          <div className="flex items-center justify-between gap-3">
+      <div className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
+        <div className="app-panel p-5 sm:p-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm text-slate-400">Today&apos;s progress</p>
-              <p className="text-xl font-semibold text-white">{completedHabitsToday}/{dailyGoals.length} goals completed</p>
+              <p className="text-sm text-[var(--color-text-muted)]">Today&apos;s progress</p>
+              <p className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">
+                {completedHabitsToday}/{dailyGoals.length} goals completed
+              </p>
             </div>
-            <Link to="/daily-goals" className="text-sm text-sky-400">Manage goals</Link>
+            <Link to={ROUTES.DAILY_GOALS} className="text-sm font-semibold text-[var(--color-accent)]">
+              Manage goals
+            </Link>
           </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <ProgressRing label="Today" value={completionPercent} accent="sky" />
@@ -49,88 +62,103 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achiev
           </div>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-          <p className="text-sm text-slate-400">Quick navigation</p>
+        <div className="app-panel p-5 sm:p-6">
+          <p className="text-sm text-[var(--color-text-muted)]">Quick navigation</p>
           <div className="mt-4 grid gap-3">
             {[
-              ['Daily Goals', '/daily-goals', 'track_changes'],
-              ['To-Do Tasks', '/to-do-tasks', 'task_alt'],
-              ['Achievements', '/achievements', 'workspace_premium'],
-              ['Statistics', '/statistics', 'bar_chart'],
+              ['Daily Goals', ROUTES.DAILY_GOALS, 'track_changes'],
+              ['To-Do Tasks', ROUTES.TODO_TASKS, 'task_alt'],
+              ['Achievements', ROUTES.ACHIEVEMENTS, 'workspace_premium'],
+              ['Statistics', ROUTES.STATISTICS, 'bar_chart'],
             ].map(([label, to, icon]) => (
-              <Link key={to} to={to} className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/70 p-3 text-slate-200 transition hover:-translate-y-0.5 hover:border-sky-400/40">
-                <span className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sky-400">{icon}</span>
+              <Link
+                key={to}
+                to={to}
+                className="app-list-item flex items-center justify-between px-4 py-4 text-[var(--color-text-primary)] hover:-translate-y-0.5"
+              >
+                <span className="flex items-center gap-3 text-sm font-semibold">
+                  <span className="app-icon-badge h-10 w-10">
+                    <span className="material-symbols-outlined text-[20px]">{icon}</span>
+                  </span>
                   {label}
                 </span>
-                <span className="material-symbols-outlined">arrow_forward</span>
+                <span className="material-symbols-outlined text-[var(--color-text-muted)]">arrow_forward</span>
               </Link>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-slate-400">Monthly calendar</p>
-            <Link to="/calendar" className="text-sm text-sky-400">Open calendar</Link>
+      <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+        <div className="app-panel p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm text-[var(--color-text-muted)]">Monthly calendar</p>
+            <Link to={ROUTES.CALENDAR} className="text-sm font-semibold text-[var(--color-accent)]">
+              Open calendar
+            </Link>
           </div>
           <div className="mt-4">
             <MonthCalendar dailyGoals={dailyGoals} selectedDate={todayKey()} onSelectDate={() => {}} viewDate={viewDate} compact />
           </div>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-slate-400">Upcoming to-do tasks</p>
-            <Link to="/to-do-tasks" className="text-sm text-sky-400">Open planner</Link>
+        <div className="app-panel p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm text-[var(--color-text-muted)]">Upcoming to-do tasks</p>
+            <Link to={ROUTES.TODO_TASKS} className="text-sm font-semibold text-[var(--color-accent)]">
+              Open planner
+            </Link>
           </div>
           {upcomingTasks.length === 0 ? (
-            <p className="mt-4 text-sm text-slate-500">No upcoming tasks yet. Add one to stay ahead.</p>
+            <p className="mt-4 text-sm leading-6 text-[var(--color-text-tertiary)]">No upcoming tasks yet. Add one to stay ahead.</p>
           ) : (
-            <div className="mt-4 space-y-2">
+            <div className="mt-4 space-y-2.5">
               {upcomingTasks.map((task) => (
-                <div key={task.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/70 px-3 py-3">
+                <div key={task.id} className="app-list-item flex items-center justify-between gap-3 px-4 py-4">
                   <div>
-                    <p className="text-sm font-semibold text-white">{task.title}</p>
-                    <p className="text-xs text-slate-400">{task.date} • {task.priority}</p>
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)]">{task.title}</p>
+                    <p className="mt-1 text-xs text-[var(--color-text-tertiary)]">{task.date} • {task.priority}</p>
                   </div>
-                  <span className="rounded-full bg-sky-500/15 px-2 py-1 text-xs text-sky-300">{task.reminderTime || 'Any time'}</span>
+                  <span className="app-chip px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em]">
+                    {task.reminderTime || 'Any time'}
+                  </span>
                 </div>
               ))}
             </div>
           )}
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-          <p className="text-sm text-slate-400">Progress snapshot</p>
-          <div className="mt-4 space-y-3">
-            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
-              <div className="flex items-center justify-between text-sm text-slate-300">
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="app-panel p-5 sm:p-6">
+          <p className="text-sm text-[var(--color-text-muted)]">Progress snapshot</p>
+          <div className="mt-4 space-y-4">
+            <div className="app-list-item px-4 py-4">
+              <div className="flex items-center justify-between text-sm text-[var(--color-text-secondary)]">
                 <span>Monthly progress</span>
-                <span className="font-semibold text-white">{monthlyProgress}%</span>
+                <span className="font-semibold text-[var(--color-text-primary)]">{monthlyProgress}%</span>
               </div>
-              <div className="mt-2 h-2 rounded-full bg-slate-800">
-                <div className="h-2 rounded-full bg-sky-400" style={{ width: `${monthlyProgress}%` }} />
+              <div className="app-stat-bar mt-3 h-2.5">
+                <span className="bg-[var(--gradient-accent)]" style={{ width: `${monthlyProgress}%` }} />
               </div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3">
-              <div className="flex items-center justify-between text-sm text-slate-300">
+            <div className="app-list-item px-4 py-4">
+              <div className="flex items-center justify-between text-sm text-[var(--color-text-secondary)]">
                 <span>Yearly progress</span>
-                <span className="font-semibold text-white">{yearlyProgress}%</span>
+                <span className="font-semibold text-[var(--color-text-primary)]">{yearlyProgress}%</span>
               </div>
-              <div className="mt-2 h-2 rounded-full bg-slate-800">
-                <div className="h-2 rounded-full bg-violet-400" style={{ width: `${yearlyProgress}%` }} />
+              <div className="app-stat-bar mt-3 h-2.5">
+                <span className="bg-gradient-to-r from-violet-400 to-sky-400" style={{ width: `${yearlyProgress}%` }} />
               </div>
             </div>
           </div>
-          <p className="mt-4 text-sm text-slate-400">Quote of the day</p>
-          <p className="mt-3 text-lg font-semibold text-white">“{quote}”</p>
-          <p className="mt-2 text-sm text-slate-500">Small wins compound into major momentum.</p>
+          <p className="mt-5 text-sm text-[var(--color-text-muted)]">Quote of the day</p>
+          <p className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">“{quote}”</p>
+          <p className="mt-2 text-sm leading-6 text-[var(--color-text-tertiary)]">Small wins compound into major momentum.</p>
         </div>
-      </div>
 
-      <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-4 shadow-xl shadow-slate-950/20 sm:p-5">
-        <Achievements dailyGoals={dailyGoals} achievements={achievements} setAchievements={setAchievements} />
+        <div className="min-w-0">
+          <Achievements dailyGoals={dailyGoals} achievements={achievements} setAchievements={setAchievements} compact />
+        </div>
       </div>
     </div>
   )

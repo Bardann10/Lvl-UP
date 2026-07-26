@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { PageHeader } from '../shared/ui/PageHeader'
+import { PlannerInput } from '../shared/ui/PlannerField'
 
 export function Search({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
   const [query, setQuery] = useState('')
@@ -13,31 +15,50 @@ export function Search({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
     return { dailyMatches, taskMatches, monthlyMatches, yearlyMatches }
   }, [dailyGoals, tasks, monthlyGoals, yearlyGoals, query])
 
-  return (
-    <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Search</p>
-        <h2 className="text-2xl font-semibold text-white">Find habits and goals fast</h2>
-        <input value={query} onChange={(event) => setQuery(event.target.value)} className="mt-4 w-full rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Search goals, tasks, notes, and plans" />
-      </div>
+  const groups = [
+    ['Daily goals', results.dailyMatches],
+    ['To-do tasks', results.taskMatches],
+    ['Monthly goals', results.monthlyMatches],
+    ['Yearly goals', results.yearlyMatches],
+  ]
 
-      <div className="grid gap-4">
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
-          <p className="text-sm text-slate-400">Daily goals</p>
-          {results.dailyMatches.length === 0 ? <p className="mt-2 text-slate-500">No daily goals match</p> : results.dailyMatches.map((goal) => <p key={goal.id} className="mt-2 text-white">• {goal.title}</p>)}
-        </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
-          <p className="text-sm text-slate-400">To-do tasks</p>
-          {results.taskMatches.length === 0 ? <p className="mt-2 text-slate-500">No tasks match</p> : results.taskMatches.map((task) => <p key={task.id} className="mt-2 text-white">• {task.title}</p>)}
-        </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
-          <p className="text-sm text-slate-400">Monthly goals</p>
-          {results.monthlyMatches.length === 0 ? <p className="mt-2 text-slate-500">No monthly goals match</p> : results.monthlyMatches.map((goal) => <p key={goal.id} className="mt-2 text-white">• {goal.title}</p>)}
-        </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
-          <p className="text-sm text-slate-400">Yearly goals</p>
-          {results.yearlyMatches.length === 0 ? <p className="mt-2 text-slate-500">No yearly goals match</p> : results.yearlyMatches.map((goal) => <p key={goal.id} className="mt-2 text-white">• {goal.title}</p>)}
-        </div>
+  return (
+    <div className="page-shell">
+      <PageHeader
+        eyebrow="Search"
+        title="Find habits and goals fast"
+        subtitle="Search every planner surface from one refined command center."
+        action={
+          <PlannerInput
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="w-full lg:min-w-[22rem]"
+            size="lg"
+            placeholder="Search goals, tasks, notes, and plans"
+          />
+        }
+      />
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {groups.map(([label, items]) => (
+          <div key={label} className="app-panel p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-lg font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">{label}</p>
+              <span className="app-chip px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em]">{items.length}</span>
+            </div>
+            {items.length === 0 ? (
+              <p className="mt-4 text-sm leading-6 text-[var(--color-text-tertiary)]">No matches yet.</p>
+            ) : (
+              <div className="mt-4 space-y-2.5">
+                {items.map((item) => (
+                  <div key={item.id} className="app-list-item px-4 py-3.5">
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)]">{item.title}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   )

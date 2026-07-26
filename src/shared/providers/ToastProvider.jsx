@@ -15,7 +15,12 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={{ showToast: setToast }}>
       {children}
       {toast ? (
-        <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-900 shadow-xl">
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-strong)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-primary)] shadow-[var(--shadow-card)] backdrop-blur-xl"
+        >
+          <span className="material-symbols-outlined text-[18px] text-[var(--color-accent)]">check_circle</span>
           {toast}
         </div>
       ) : null}
@@ -23,6 +28,7 @@ export function ToastProvider({ children }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useToast() {
   return useContext(ToastContext)
 }
