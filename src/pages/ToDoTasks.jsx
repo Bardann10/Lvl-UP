@@ -13,17 +13,17 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const [selectedDate, setSelectedDate] = useState(todayKey())
   const [form, setForm] = useState({ title: '', description: '', date: todayKey(), reminderTime: '', priority: 'Medium', color: 'amber' })
   const [editingId, setEditingId] = useState(null)
-  const [quickDateSeed] = useState(() => Date.now())
+  const [dateGenerationTimestamp] = useState(() => Date.now())
 
   const visibleTasks = useMemo(() => tasks.filter((task) => task.date === selectedDate), [selectedDate, tasks])
 
   const quickDateOptions = useMemo(() => {
     return [
       todayKey(),
-      new Date(quickDateSeed + MILLISECONDS_PER_DAY).toISOString().slice(0, 10),
-      new Date(quickDateSeed + 2 * MILLISECONDS_PER_DAY).toISOString().slice(0, 10),
+      new Date(dateGenerationTimestamp + MILLISECONDS_PER_DAY).toISOString().slice(0, 10),
+      new Date(dateGenerationTimestamp + 2 * MILLISECONDS_PER_DAY).toISOString().slice(0, 10),
     ]
-  }, [quickDateSeed])
+  }, [dateGenerationTimestamp])
 
   const addTask = (event) => {
     event.preventDefault()
