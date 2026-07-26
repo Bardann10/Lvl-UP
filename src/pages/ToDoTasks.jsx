@@ -7,7 +7,7 @@ import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { isPastDate, todayKey } from '../utils/date'
 
-const MILLISECONDS_PER_DAY = 86400000
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000
 
 export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const [selectedDate, setSelectedDate] = useState(todayKey())

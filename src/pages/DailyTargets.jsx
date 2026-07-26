@@ -108,7 +108,7 @@ export function DailyTargets({ dailyGoals, tasks, setDailyGoals, setTasks, showT
         action={<Button type="button" variant="secondary">{dailyGoals.length} goals</Button>}
       />
       <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-        <div className="mt-0 flex rounded-full border border-white/10 bg-slate-950/70 p-1.5">
+        <div className="flex rounded-full border border-white/10 bg-slate-950/70 p-1.5">
           <button type="button" onClick={() => setActiveTab('tasks')} className={`flex-1 rounded-full px-3 py-2 text-sm font-medium transition ${activeTab === 'tasks' ? 'bg-sky-500 text-slate-950' : 'text-slate-300'}`}>
             To-Do Tasks
           </button>
