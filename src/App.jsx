@@ -19,14 +19,8 @@ import { defaultData, loadAppData, saveAppData } from './services/storage'
 
 function AppShell() {
   const { showToast } = useToast()
-  const [data, setData] = useState(defaultData)
+  const [data, setData] = useState(() => loadAppData() || defaultData)
   const [quickAddOpen, setQuickAddOpen] = useState(false)
-
-  useEffect(() => {
-    const loaded = loadAppData()
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setData(loaded)
-  }, [])
 
   useEffect(() => {
     saveAppData(data)
@@ -194,4 +188,3 @@ export default function App() {
     </Router>
   )
 }
-

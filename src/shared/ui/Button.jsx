@@ -4,7 +4,7 @@ export function Button({ children, className = '', variant = 'primary', ...props
 
   const variants = {
     primary:
-      'border border-transparent bg-[var(--gradient-accent)] text-slate-950 focus-visible:outline-[var(--color-ring)]',
+      'border border-transparent bg-[var(--gradient-accent)] text-[var(--color-text-inverse)] focus-visible:outline-[var(--color-ring)]',
     secondary:
       'border border-[var(--color-border)] bg-[var(--color-surface-soft)] text-[var(--color-text-primary)] focus-visible:outline-[var(--color-ring)]',
     ghost:

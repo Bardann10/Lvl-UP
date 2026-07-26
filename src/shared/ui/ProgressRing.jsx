@@ -27,7 +27,7 @@ export function ProgressRing({ label, value, accent = 'sky' }) {
               strokeDasharray: circumference,
               strokeDashoffset: offset,
               transition: 'stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
-              filter: 'drop-shadow(0 10px 16px rgba(96, 165, 250, 0.28))',
+              filter: 'var(--filter-accent-glow)',
             }}
           />
         </svg>

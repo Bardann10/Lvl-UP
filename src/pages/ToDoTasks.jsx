@@ -6,8 +6,7 @@ import { PlannerInput, PlannerSelect, PlannerTextarea } from '../shared/ui/Plann
 import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { isPastDate, todayKey } from '../utils/date'
-
-const MS_PER_DAY = 24 * 60 * 60 * 1000
+import { MS_PER_DAY } from '../utils/constants'
 
 export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const [selectedDate, setSelectedDate] = useState(todayKey())

@@ -201,9 +201,29 @@ input[type='range'] {
 
 .app-chip-active {
   background: var(--gradient-accent);
-  color: #07111f;
+  color: var(--color-text-inverse);
   border-color: transparent;
   box-shadow: var(--shadow-float);
+}
+
+.app-glow {
+  position: absolute;
+  height: 18rem;
+  width: 18rem;
+  border-radius: 999px;
+  filter: blur(72px);
+}
+
+.app-glow-start {
+  left: -8rem;
+  top: -6rem;
+  background: var(--color-accent-soft);
+}
+
+.app-glow-end {
+  right: -5rem;
+  top: 6rem;
+  background: var(--color-violet-soft);
 }
 
 .app-stat-bar {

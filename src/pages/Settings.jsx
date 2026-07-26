@@ -116,7 +116,7 @@ export function Settings({ data, setData, saveData, showToast }) {
         </div>
 
         <div className="app-panel p-5 sm:p-6">
-          <div className="rounded-[calc(var(--radius-card)-0.15rem)] border border-[var(--color-danger-soft)] bg-[var(--color-danger-soft)] p-5">
+          <div className="rounded-[calc(var(--radius-card)-0.15rem)] border border-[var(--color-danger)] bg-[var(--color-danger-soft)] p-5">
             <p className="text-xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">Reset app</p>
             <p className="mt-2 text-sm leading-6 text-[var(--color-text-tertiary)]">This clears current data from local storage and cannot be undone.</p>
             <div className="mt-5">

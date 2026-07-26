@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { PageHeader } from '../shared/ui/PageHeader'
 
 const ACHIEVEMENTS = [
@@ -13,8 +13,6 @@ const ACHIEVEMENTS = [
 ]
 
 export function Achievements({ dailyGoals, achievements, setAchievements, compact = false }) {
-  const [justUnlocked, setJustUnlocked] = useState([])
-
   const completedCount = useMemo(() => dailyGoals.reduce((count, goal) => count + goal.completedDates.length, 0), [dailyGoals])
   const longestStreak = useMemo(() => dailyGoals.reduce((max, goal) => Math.max(max, goal.streak || 0), 0), [dailyGoals])
 
@@ -49,8 +47,6 @@ export function Achievements({ dailyGoals, achievements, setAchievements, compac
 
     if (nextUnlocked.length > 0) {
       setAchievements((current) => [...current, ...nextUnlocked.filter((item) => !current.some((existing) => existing.id === item.id))])
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setJustUnlocked(nextUnlocked.map((item) => item.id))
     }
   }, [achievements, completedCount, longestStreak, setAchievements])
 
@@ -64,12 +60,12 @@ export function Achievements({ dailyGoals, achievements, setAchievements, compac
 
       <div className="grid gap-4 md:grid-cols-2">
         {ACHIEVEMENTS.map((achievement) => {
-          const unlocked = (achievements || []).some((item) => item.id === achievement.id)
-          const isNew = justUnlocked.includes(achievement.id)
+          const unlockedAchievement = (achievements || []).find((item) => item.id === achievement.id)
+          const unlocked = Boolean(unlockedAchievement)
           return (
             <div
               key={achievement.id}
-              className={`app-list-item p-5 ${unlocked ? 'border-[var(--color-success-soft)] bg-[var(--color-success-soft)]' : ''} ${isNew ? 'animate-pulse' : ''}`}
+              className={`app-list-item p-5 ${unlocked ? 'border-[var(--color-success-soft)] bg-[var(--color-success-soft)]' : ''}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">

@@ -46,7 +46,9 @@ export function Modal({ open, onClose, title, children, maxWidth = 'max-w-xl' })
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
-      previousFocus?.focus()
+      if (previousFocus instanceof HTMLElement && document.contains(previousFocus)) {
+        previousFocus.focus()
+      }
     }
   }, [open, onClose])
 
