@@ -78,9 +78,9 @@ export function Calendar({ dailyGoals, tasks }) {
             <p className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-[var(--color-text-primary)]">Plan your momentum</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <ButtonLike onClick={() => changeMonth(-1)} label="Previous" />
-            <ButtonLike onClick={jumpToToday} label="Today" active />
-            <ButtonLike onClick={() => changeMonth(1)} label="Next" />
+            <CalendarNavButton onClick={() => changeMonth(-1)} label="Previous" />
+            <CalendarNavButton onClick={jumpToToday} label="Today" active />
+            <CalendarNavButton onClick={() => changeMonth(1)} label="Next" />
           </div>
         </div>
         <div className="mt-5">
@@ -172,7 +172,7 @@ export function Calendar({ dailyGoals, tasks }) {
   )
 }
 
-function ButtonLike({ onClick, label, active = false }) {
+function CalendarNavButton({ onClick, label, active = false }) {
   return (
     <button
       type="button"
