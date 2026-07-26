@@ -1,8 +1,11 @@
 import { useState } from 'react'
-import { Button } from '../components/Buttons'
+import { Button } from '../shared/ui/Button'
+import { PageHeader } from '../shared/ui/PageHeader'
+import { ConfirmDialog } from '../shared/ui/ConfirmDialog'
 
 export function Settings({ data, setData, saveData, showToast }) {
   const [importText, setImportText] = useState('')
+  const [confirmResetOpen, setConfirmResetOpen] = useState(false)
 
   const toggleTheme = () => {
     const nextTheme = data.theme === 'dark' ? 'light' : 'dark'
@@ -43,29 +46,25 @@ export function Settings({ data, setData, saveData, showToast }) {
     }
   }
 
-  const resetApp = () => {
-    if (window.confirm('Reset all app data?')) {
-      const emptyData = {
-        theme: data.theme,
-        notificationsEnabled: data.notificationsEnabled,
-        achievements: [],
-        dailyGoals: [],
-        tasks: [],
-        monthlyGoals: [],
-        yearlyGoals: [],
-      }
-      setData(emptyData)
-      saveData(emptyData)
-      showToast('App reset')
+  const handleConfirmReset = () => {
+    const emptyData = {
+      theme: data.theme,
+      notificationsEnabled: data.notificationsEnabled,
+      achievements: [],
+      dailyGoals: [],
+      tasks: [],
+      monthlyGoals: [],
+      yearlyGoals: [],
     }
+    setData(emptyData)
+    saveData(emptyData)
+    showToast('App reset')
+    setConfirmResetOpen(false)
   }
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Settings</p>
-        <h2 className="text-2xl font-semibold text-white">Personalize and protect your data</h2>
-      </div>
+      <PageHeader eyebrow="Settings" title="Personalize and protect your data" />
 
       <div className="grid gap-4">
         <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
@@ -101,10 +100,21 @@ export function Settings({ data, setData, saveData, showToast }) {
           <p className="text-lg font-semibold text-white">Reset app</p>
           <p className="mt-2 text-sm text-slate-400">This clears current data from local storage.</p>
           <div className="mt-4">
-            <Button type="button" variant="ghost" onClick={resetApp}>Reset app</Button>
+            <Button type="button" variant="ghost" onClick={() => setConfirmResetOpen(true)}>Reset app</Button>
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmResetOpen}
+        title="Reset all app data?"
+        description="This will permanently clear all your goals, tasks, and achievements from local storage. This action cannot be undone."
+        confirmLabel="Reset"
+        cancelLabel="Cancel"
+        danger
+        onConfirm={handleConfirmReset}
+        onCancel={() => setConfirmResetOpen(false)}
+      />
     </div>
   )
 }

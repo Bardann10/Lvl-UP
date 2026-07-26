@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Button } from '../components/Buttons'
-import { EmptyState } from '../components/EmptyState'
+import { Button } from '../shared/ui/Button'
+import { EmptyState } from '../shared/ui/EmptyState'
+import { PageHeader } from '../shared/ui/PageHeader'
 import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { isPastDate, todayKey } from '../utils/date'
@@ -11,6 +12,16 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const [editingId, setEditingId] = useState(null)
 
   const visibleTasks = useMemo(() => tasks.filter((task) => task.date === selectedDate), [selectedDate, tasks])
+
+  const quickDateOptions = useMemo(() => {
+    // eslint-disable-next-line react-hooks/purity
+    const now = Date.now()
+    return [
+      todayKey(),
+      new Date(now + 86400000).toISOString().slice(0, 10),
+      new Date(now + 2 * 86400000).toISOString().slice(0, 10),
+    ]
+  }, [])
 
   const addTask = (event) => {
     event.preventDefault()
@@ -54,38 +65,39 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   return (
     <div className={compact ? 'space-y-4 rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-4' : 'space-y-6'}>
       {!compact && (
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">To-Do Tasks</p>
-        <h2 className="text-2xl font-semibold text-white">Plan any day without affecting daily goals</h2>
-        <div className="mt-4 flex flex-wrap gap-3">
-          {[todayKey(), new Date(Date.now() + 86400000).toISOString().slice(0, 10), new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 10)].map((date) => (
-            <button key={date} type="button" onClick={() => setSelectedDate(date)} className={`rounded-full px-3 py-2 text-sm ${selectedDate === date ? 'bg-sky-500 text-slate-950' : 'bg-slate-800 text-slate-300'}`}>{date}</button>
-          ))}
-          <input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} className="rounded-full border border-white/10 bg-slate-800 px-3 py-2 text-sm text-white" />
-        </div>
-        <form onSubmit={addTask} className="mt-4 space-y-3">
-          <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" placeholder="Task title" />
-          <textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" placeholder="Task description" />
-          <div className="grid gap-3 md:grid-cols-3">
-            <input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" />
-            <input type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" />
-            <select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white">
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
+        <>
+          <PageHeader eyebrow="To-Do Tasks" title="Plan any day without affecting daily goals" />
+          <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
+            <div className="flex flex-wrap gap-3">
+              {quickDateOptions.map((date) => (
+                <button key={date} type="button" onClick={() => setSelectedDate(date)} className={`rounded-full px-3 py-2 text-sm ${selectedDate === date ? 'bg-sky-500 text-slate-950' : 'bg-slate-800 text-slate-300'}`}>{date}</button>
+              ))}
+              <input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} className="rounded-full border border-white/10 bg-slate-800 px-3 py-2 text-sm text-white" />
+            </div>
+            <form onSubmit={addTask} className="mt-4 space-y-3">
+              <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" placeholder="Task title" />
+              <textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" placeholder="Task description" />
+              <div className="grid gap-3 md:grid-cols-3">
+                <input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" />
+                <input type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" />
+                <select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white">
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </div>
+              <div className="flex items-center justify-between">
+                <select value={form.color} onChange={(event) => setForm({ ...form, color: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white">
+                  <option value="amber">Amber</option>
+                  <option value="emerald">Emerald</option>
+                  <option value="violet">Violet</option>
+                  <option value="sky">Sky</option>
+                </select>
+                <Button type="submit">Add task</Button>
+              </div>
+            </form>
           </div>
-          <div className="flex items-center justify-between">
-            <select value={form.color} onChange={(event) => setForm({ ...form, color: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white">
-              <option value="amber">Amber</option>
-              <option value="emerald">Emerald</option>
-              <option value="violet">Violet</option>
-              <option value="sky">Sky</option>
-            </select>
-            <Button type="submit">Add task</Button>
-          </div>
-        </form>
-      </div>
+        </>
       )}
 
       <div className="flex items-center justify-between">

@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Button } from '../components/Buttons'
-import { EmptyState } from '../components/EmptyState'
+import { Button } from '../shared/ui/Button'
+import { EmptyState } from '../shared/ui/EmptyState'
+import { PageHeader } from '../shared/ui/PageHeader'
 import { createId } from '../services/storage'
 
 export function MonthlyGoals({ monthlyGoals, setMonthlyGoals, showToast }) {
@@ -39,14 +40,16 @@ export function MonthlyGoals({ monthlyGoals, setMonthlyGoals, showToast }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Monthly Goals</p>
-        <h2 className="text-2xl font-semibold text-white">Track progress with momentum</h2>
-        <form onSubmit={addGoal} className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <input value={form} onChange={(event) => setForm(event.target.value)} className="flex-1 rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Add monthly goal" />
-          <Button type="submit">Save goal</Button>
-        </form>
-      </div>
+      <PageHeader
+        eyebrow="Monthly Goals"
+        title="Track progress with momentum"
+        action={
+          <form onSubmit={addGoal} className="flex flex-col gap-3 sm:flex-row">
+            <input value={form} onChange={(event) => setForm(event.target.value)} className="flex-1 rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Add monthly goal" />
+            <Button type="submit">Save goal</Button>
+          </form>
+        }
+      />
 
       {monthlyGoals.length === 0 ? (
         <EmptyState title="No monthly goals yet" description="Set a few milestones to keep your month intentional." />

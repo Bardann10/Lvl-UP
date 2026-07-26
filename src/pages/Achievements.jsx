@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { createId } from '../services/storage'
+import { PageHeader } from '../shared/ui/PageHeader'
 
 const ACHIEVEMENTS = [
   { id: 'first-goal', title: 'First Goal Completed', description: 'Complete your first daily goal.', threshold: 1, icon: 'emoji_events' },
@@ -43,16 +43,14 @@ export function Achievements({ dailyGoals, achievements, setAchievements }) {
 
     if (nextUnlocked.length > 0) {
       setAchievements((current) => [...current, ...nextUnlocked.filter((item) => !current.some((existing) => existing.id === item.id))])
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setJustUnlocked(nextUnlocked.map((item) => item.id))
     }
   }, [achievements, completedCount, longestStreak, setAchievements])
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Achievements</p>
-        <h2 className="text-2xl font-semibold text-white">Badges for your consistency</h2>
-      </div>
+      <PageHeader eyebrow="Achievements" title="Badges for your consistency" />
 
       <div className="grid gap-4 md:grid-cols-2">
         {ACHIEVEMENTS.map((achievement) => {

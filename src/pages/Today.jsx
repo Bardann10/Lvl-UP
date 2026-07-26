@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from '../components/Buttons'
-import { EmptyState } from '../components/EmptyState'
+import { Button } from '../shared/ui/Button'
+import { EmptyState } from '../shared/ui/EmptyState'
 import { createId } from '../services/storage'
 
 export function Today({ tasks, setTasks, showToast }) {

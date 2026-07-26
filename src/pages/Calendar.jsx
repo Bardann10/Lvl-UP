@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { MonthCalendar } from '../components/MonthCalendar'
+import { MonthCalendar } from '../shared/ui/MonthCalendar'
+import { PageHeader } from '../shared/ui/PageHeader'
 import { formatLongDate, todayKey } from '../utils/date'
 
 function toDateKey(date) {
@@ -60,10 +61,7 @@ export function Calendar({ dailyGoals, tasks }) {
 
   return (
     <div className="space-y-6 pb-24 lg:pb-6">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-        <p className="text-sm text-slate-400">Calendar</p>
-        <h2 className="text-2xl font-semibold text-white">Monthly overview</h2>
-      </div>
+      <PageHeader eyebrow="Calendar" title="Monthly overview" />
 
       <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-4 shadow-xl shadow-slate-950/20 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

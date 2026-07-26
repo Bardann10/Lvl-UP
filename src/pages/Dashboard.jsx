@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { StatCard } from '../components/Cards'
-import { MonthCalendar } from '../components/MonthCalendar'
-import { ProgressRing } from '../components/ProgressCards'
+import { StatCard } from '../shared/ui/Card'
+import { MonthCalendar } from '../shared/ui/MonthCalendar'
+import { ProgressRing } from '../shared/ui/ProgressRing'
 import { Achievements } from './Achievements'
 import { todayKey, getTodayLabel } from '../utils/date'
+import { ROUTES } from '../app/router'
 
 export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achievements, setAchievements }) {
   const [viewDate] = useState(new Date())
@@ -25,8 +26,8 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achiev
         <h1 className="mt-2 text-3xl font-semibold text-white">Level up your daily momentum.</h1>
         <p className="mt-3 max-w-2xl text-slate-300">{getTodayLabel()} is your reset point. Keep the streak alive and stay consistent.</p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link to="/daily-goals" className="rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950">View Daily Goals</Link>
-          <Link to="/achievements" className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-slate-200">See achievements</Link>
+          <Link to={ROUTES.DAILY_GOALS} className="rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950">View Daily Goals</Link>
+          <Link to={ROUTES.ACHIEVEMENTS} className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-slate-200">See achievements</Link>
         </div>
       </div>
 
@@ -37,7 +38,7 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achiev
               <p className="text-sm text-slate-400">Today&apos;s progress</p>
               <p className="text-xl font-semibold text-white">{completedHabitsToday}/{dailyGoals.length} goals completed</p>
             </div>
-            <Link to="/daily-goals" className="text-sm text-sky-400">Manage goals</Link>
+            <Link to={ROUTES.DAILY_GOALS} className="text-sm text-sky-400">Manage goals</Link>
           </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <ProgressRing label="Today" value={completionPercent} accent="sky" />
@@ -53,10 +54,10 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achiev
           <p className="text-sm text-slate-400">Quick navigation</p>
           <div className="mt-4 grid gap-3">
             {[
-              ['Daily Goals', '/daily-goals', 'track_changes'],
-              ['To-Do Tasks', '/to-do-tasks', 'task_alt'],
-              ['Achievements', '/achievements', 'workspace_premium'],
-              ['Statistics', '/statistics', 'bar_chart'],
+              ['Daily Goals', ROUTES.DAILY_GOALS, 'track_changes'],
+              ['To-Do Tasks', ROUTES.TODO_TASKS, 'task_alt'],
+              ['Achievements', ROUTES.ACHIEVEMENTS, 'workspace_premium'],
+              ['Statistics', ROUTES.STATISTICS, 'bar_chart'],
             ].map(([label, to, icon]) => (
               <Link key={to} to={to} className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/70 p-3 text-slate-200 transition hover:-translate-y-0.5 hover:border-sky-400/40">
                 <span className="flex items-center gap-2">
@@ -74,7 +75,7 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achiev
         <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
           <div className="flex items-center justify-between">
             <p className="text-sm text-slate-400">Monthly calendar</p>
-            <Link to="/calendar" className="text-sm text-sky-400">Open calendar</Link>
+            <Link to={ROUTES.CALENDAR} className="text-sm text-sky-400">Open calendar</Link>
           </div>
           <div className="mt-4">
             <MonthCalendar dailyGoals={dailyGoals} selectedDate={todayKey()} onSelectDate={() => {}} viewDate={viewDate} compact />
@@ -83,7 +84,7 @@ export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achiev
         <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
           <div className="flex items-center justify-between">
             <p className="text-sm text-slate-400">Upcoming to-do tasks</p>
-            <Link to="/to-do-tasks" className="text-sm text-sky-400">Open planner</Link>
+            <Link to={ROUTES.TODO_TASKS} className="text-sm text-sky-400">Open planner</Link>
           </div>
           {upcomingTasks.length === 0 ? (
             <p className="mt-4 text-sm text-slate-500">No upcoming tasks yet. Add one to stay ahead.</p>

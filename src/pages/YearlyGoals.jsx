@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Button } from '../components/Buttons'
-import { EmptyState } from '../components/EmptyState'
+import { Button } from '../shared/ui/Button'
+import { EmptyState } from '../shared/ui/EmptyState'
+import { PageHeader } from '../shared/ui/PageHeader'
 import { createId } from '../services/storage'
 
 export function YearlyGoals({ yearlyGoals, setYearlyGoals, showToast }) {
@@ -39,15 +40,17 @@ export function YearlyGoals({ yearlyGoals, setYearlyGoals, showToast }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Yearly Goals</p>
-        <h2 className="text-2xl font-semibold text-white">Long-term categories and progress</h2>
-        <form onSubmit={addGoal} className="mt-4 grid gap-3 md:grid-cols-[1.4fr_1fr_auto]">
-          <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="New yearly goal" />
-          <input value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Category" />
-          <Button type="submit">Add goal</Button>
-        </form>
-      </div>
+      <PageHeader
+        eyebrow="Yearly Goals"
+        title="Long-term categories and progress"
+        action={
+          <form onSubmit={addGoal} className="grid gap-3 md:grid-cols-[1.4fr_1fr_auto]">
+            <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="New yearly goal" />
+            <input value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Category" />
+            <Button type="submit">Add goal</Button>
+          </form>
+        }
+      />
 
       {yearlyGoals.length === 0 ? (
         <EmptyState title="No yearly goals yet" description="Map out the big milestones across your life and work." />

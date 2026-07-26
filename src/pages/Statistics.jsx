@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
+import { PageHeader } from '../shared/ui/PageHeader'
 import { todayKey } from '../utils/date'
 
-export function Statistics({ goals, habits, tasks }) {
+export function Statistics({ goals, habits }) {
   const today = todayKey()
   const completedToday = habits.filter((habit) => habit.completedDates.includes(today)).length
   const totalHabits = habits.length || 1
@@ -16,10 +17,7 @@ export function Statistics({ goals, habits, tasks }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Statistics</p>
-        <h2 className="text-2xl font-semibold text-white">Your momentum, at a glance</h2>
-      </div>
+      <PageHeader eyebrow="Statistics" title="Your momentum, at a glance" />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
           ['Daily completion', `${Math.round((completedToday / totalHabits) * 100)}%`, 'Today'],

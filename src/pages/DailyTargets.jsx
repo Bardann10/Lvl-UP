@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Button } from '../components/Buttons'
-import { EmptyState } from '../components/EmptyState'
+import { Button } from '../shared/ui/Button'
+import { EmptyState } from '../shared/ui/EmptyState'
+import { PageHeader } from '../shared/ui/PageHeader'
 import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { todayKey } from '../utils/date'
@@ -100,16 +101,13 @@ export function DailyTargets({ dailyGoals, tasks, setDailyGoals, setTasks, showT
 
   return (
     <div className="space-y-6 pb-24 lg:pb-6">
+      <PageHeader
+        eyebrow="Daily Goals"
+        title="A calm place for habits and plans"
+        action={<Button type="button" variant="secondary">{dailyGoals.length} goals</Button>}
+      />
       <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-sm text-slate-400">Daily Goals</p>
-            <h2 className="text-2xl font-semibold text-white">A calm place for habits and plans</h2>
-          </div>
-          <Button type="button" variant="secondary">{dailyGoals.length} goals</Button>
-        </div>
-
-        <div className="mt-5 flex rounded-full border border-white/10 bg-slate-950/70 p-1.5">
+        <div className="mt-0 flex rounded-full border border-white/10 bg-slate-950/70 p-1.5">
           <button type="button" onClick={() => setActiveTab('tasks')} className={`flex-1 rounded-full px-3 py-2 text-sm font-medium transition ${activeTab === 'tasks' ? 'bg-sky-500 text-slate-950' : 'text-slate-300'}`}>
             To-Do Tasks
           </button>

@@ -1,6 +1,20 @@
+/**
+ * Generic Card – a rounded surface container used throughout the app.
+ * `StatCard` is a specialised variant for displaying a metric.
+ */
+export function Card({ children, className = '' }) {
+  return (
+    <div
+      className={`rounded-3xl border border-white/10 bg-slate-900/70 p-4 shadow-lg shadow-slate-950/30 ${className}`}
+    >
+      {children}
+    </div>
+  )
+}
+
 export function StatCard({ title, value, description, icon }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4 shadow-lg shadow-slate-950/30">
+    <Card>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-slate-400">{title}</p>
@@ -11,6 +25,6 @@ export function StatCard({ title, value, description, icon }) {
         </div>
       </div>
       <p className="mt-3 text-sm text-slate-400">{description}</p>
-    </div>
+    </Card>
   )
 }

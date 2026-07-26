@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { PageHeader } from '../shared/ui/PageHeader'
 
 export function Search({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
   const [query, setQuery] = useState('')
@@ -15,11 +16,18 @@ export function Search({ dailyGoals, tasks, monthlyGoals, yearlyGoals }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Search</p>
-        <h2 className="text-2xl font-semibold text-white">Find habits and goals fast</h2>
-        <input value={query} onChange={(event) => setQuery(event.target.value)} className="mt-4 w-full rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Search goals, tasks, notes, and plans" />
-      </div>
+      <PageHeader
+        eyebrow="Search"
+        title="Find habits and goals fast"
+        action={
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="w-full rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white"
+            placeholder="Search goals, tasks, notes, and plans"
+          />
+        }
+      />
 
       <div className="grid gap-4">
         <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
