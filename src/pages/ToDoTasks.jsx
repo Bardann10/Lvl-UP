@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Button } from '../shared/ui/Button'
 import { EmptyState } from '../shared/ui/EmptyState'
 import { PageHeader } from '../shared/ui/PageHeader'
+import { PlannerInput, PlannerSelect, PlannerTextarea } from '../shared/ui/PlannerField'
 import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { isPastDate, todayKey } from '../utils/date'
@@ -75,24 +76,24 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
               <input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} className="rounded-full border border-white/10 bg-slate-800 px-3 py-2 text-sm text-white" />
             </div>
             <form onSubmit={addTask} className="mt-4 space-y-3">
-              <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" placeholder="Task title" />
-              <textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" placeholder="Task description" />
+              <PlannerInput value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full" placeholder="Task title" />
+              <PlannerTextarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} className="min-h-24 w-full" placeholder="Task description" />
               <div className="grid gap-3 md:grid-cols-3">
-                <input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" />
-                <input type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white" />
-                <select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white">
+                <PlannerInput type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} />
+                <PlannerInput type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} />
+                <PlannerSelect value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value })}>
                   <option value="High">High</option>
                   <option value="Medium">Medium</option>
                   <option value="Low">Low</option>
-                </select>
+                </PlannerSelect>
               </div>
               <div className="flex items-center justify-between">
-                <select value={form.color} onChange={(event) => setForm({ ...form, color: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white">
+                <PlannerSelect value={form.color} onChange={(event) => setForm({ ...form, color: event.target.value })}>
                   <option value="amber">Amber</option>
                   <option value="emerald">Emerald</option>
                   <option value="violet">Violet</option>
                   <option value="sky">Sky</option>
-                </select>
+                </PlannerSelect>
                 <Button type="submit">Add task</Button>
               </div>
             </form>
@@ -119,11 +120,11 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
                     <div>
                       {isEditing ? (
                         <div className="space-y-2">
-                          <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
-                          <textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} className="min-h-20 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
+                          <PlannerInput value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full" size="sm" />
+                          <PlannerTextarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} className="min-h-20 w-full" size="sm" />
                           <div className="grid gap-2 md:grid-cols-2">
-                            <input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
-                            <input type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
+                            <PlannerInput type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} size="sm" />
+                            <PlannerInput type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} size="sm" />
                           </div>
                         </div>
                       ) : (

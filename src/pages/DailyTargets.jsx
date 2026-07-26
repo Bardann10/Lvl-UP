@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '../shared/ui/Button'
 import { EmptyState } from '../shared/ui/EmptyState'
 import { PageHeader } from '../shared/ui/PageHeader'
+import { PlannerInput, PlannerSelect, PlannerTextarea } from '../shared/ui/PlannerField'
 import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { todayKey } from '../utils/date'
@@ -122,20 +123,20 @@ export function DailyTargets({ dailyGoals, tasks, setDailyGoals, setTasks, showT
           </div>
         ) : (
           <form onSubmit={addGoal} className="mt-5 space-y-3">
-          <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="New goal" />
+          <PlannerInput value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="w-full" size="lg" placeholder="New goal" />
           <div className="grid gap-3 md:grid-cols-2">
-            <input value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Category" />
-            <input value={form.icon} onChange={(event) => setForm({ ...form, icon: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Icon name" />
+            <PlannerInput value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} size="lg" placeholder="Category" />
+            <PlannerInput value={form.icon} onChange={(event) => setForm({ ...form, icon: event.target.value })} size="lg" placeholder="Icon name" />
           </div>
-          <textarea value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Notes" />
+          <PlannerTextarea value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} className="min-h-24 w-full" size="lg" placeholder="Notes" />
           <div className="grid gap-3 md:grid-cols-2">
-            <input type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" />
-            <select value={form.color} onChange={(event) => setForm({ ...form, color: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white">
+            <PlannerInput type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} size="lg" />
+            <PlannerSelect value={form.color} onChange={(event) => setForm({ ...form, color: event.target.value })} size="lg">
               <option value="sky">Sky</option>
               <option value="emerald">Emerald</option>
               <option value="violet">Violet</option>
               <option value="amber">Amber</option>
-            </select>
+            </PlannerSelect>
           </div>
           <div className="flex justify-end">
             <Button type="submit">Add goal</Button>
@@ -159,8 +160,8 @@ export function DailyTargets({ dailyGoals, tasks, setDailyGoals, setTasks, showT
                       <input type="checkbox" checked={doneToday} onChange={() => toggleGoal(goal.id)} className="h-5 w-5 rounded border-slate-600 bg-slate-950" />
                       {isEditing ? (
                         <div className="flex flex-1 flex-col gap-2 md:flex-row">
-                          <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="flex-1 rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
-                          <input value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
+                          <PlannerInput value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="flex-1" size="sm" />
+                          <PlannerInput value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} size="sm" />
                         </div>
                       ) : (
                         <div>
@@ -171,10 +172,10 @@ export function DailyTargets({ dailyGoals, tasks, setDailyGoals, setTasks, showT
                     </div>
                     {isEditing ? (
                       <div className="mt-3 space-y-2">
-                        <textarea value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} className="min-h-20 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
+                        <PlannerTextarea value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} className="min-h-20 w-full" size="sm" />
                         <div className="grid gap-2 md:grid-cols-2">
-                          <input type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
-                          <input value={form.icon} onChange={(event) => setForm({ ...form, icon: event.target.value })} className="rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-white" />
+                          <PlannerInput type="time" value={form.reminderTime} onChange={(event) => setForm({ ...form, reminderTime: event.target.value })} size="sm" />
+                          <PlannerInput value={form.icon} onChange={(event) => setForm({ ...form, icon: event.target.value })} size="sm" />
                         </div>
                       </div>
                     ) : (

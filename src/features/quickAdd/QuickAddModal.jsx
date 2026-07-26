@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Modal } from '../../shared/ui/Modal'
 import { Button } from '../../shared/ui/Button'
+import { PlannerInput, PlannerSelect, PlannerTextarea } from '../../shared/ui/PlannerField'
 
 export function QuickAddModal({ open, onClose, onAddDailyGoal, onAddTask, showToast }) {
   const [mode, setMode] = useState('goal')
@@ -61,49 +62,49 @@ export function QuickAddModal({ open, onClose, onAddDailyGoal, onAddTask, showTo
 
       {mode === 'goal' ? (
         <form onSubmit={handleGoalSave} className="mt-4 space-y-3">
-          <input
+        <PlannerInput
             value={goalForm.title}
             onChange={(event) => setGoalForm({ ...goalForm, title: event.target.value })}
-            className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+          className="w-full"
             placeholder="Goal title"
           />
           <div className="grid gap-3 md:grid-cols-2">
-            <input
+          <PlannerInput
               value={goalForm.category}
               onChange={(event) => setGoalForm({ ...goalForm, category: event.target.value })}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+            className="w-full"
               placeholder="Category"
             />
-            <input
+          <PlannerInput
               value={goalForm.icon}
               onChange={(event) => setGoalForm({ ...goalForm, icon: event.target.value })}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+            className="w-full"
               placeholder="Icon name"
             />
           </div>
-          <textarea
+        <PlannerTextarea
             value={goalForm.notes}
             onChange={(event) => setGoalForm({ ...goalForm, notes: event.target.value })}
-            className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+          className="min-h-24 w-full"
             placeholder="Notes"
           />
           <div className="grid gap-3 md:grid-cols-2">
-            <input
+          <PlannerInput
               type="time"
               value={goalForm.reminderTime || ''}
               onChange={(event) => setGoalForm({ ...goalForm, reminderTime: event.target.value })}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+            className="w-full"
             />
-            <select
+          <PlannerSelect
               value={goalForm.color}
               onChange={(event) => setGoalForm({ ...goalForm, color: event.target.value })}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+            className="w-full"
             >
               <option value="sky">Sky</option>
               <option value="emerald">Emerald</option>
               <option value="violet">Violet</option>
               <option value="amber">Amber</option>
-            </select>
+          </PlannerSelect>
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="secondary" type="button" onClick={onClose}>Cancel</Button>
@@ -112,52 +113,52 @@ export function QuickAddModal({ open, onClose, onAddDailyGoal, onAddTask, showTo
         </form>
       ) : (
         <form onSubmit={handleTaskSave} className="mt-4 space-y-3">
-          <input
+        <PlannerInput
             value={taskForm.title}
             onChange={(event) => setTaskForm({ ...taskForm, title: event.target.value })}
-            className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+          className="w-full"
             placeholder="Task title"
           />
-          <textarea
+        <PlannerTextarea
             value={taskForm.description}
             onChange={(event) => setTaskForm({ ...taskForm, description: event.target.value })}
-            className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+          className="min-h-24 w-full"
             placeholder="Task description"
           />
           <div className="grid gap-3 md:grid-cols-2">
-            <input
+          <PlannerInput
               type="date"
               value={taskForm.date}
               onChange={(event) => setTaskForm({ ...taskForm, date: event.target.value })}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+            className="w-full"
             />
-            <input
+          <PlannerInput
               type="time"
               value={taskForm.reminderTime || ''}
               onChange={(event) => setTaskForm({ ...taskForm, reminderTime: event.target.value })}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+            className="w-full"
             />
           </div>
           <div className="grid gap-3 md:grid-cols-2">
-            <select
+          <PlannerSelect
               value={taskForm.priority}
               onChange={(event) => setTaskForm({ ...taskForm, priority: event.target.value })}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+            className="w-full"
             >
               <option value="High">High</option>
               <option value="Medium">Medium</option>
               <option value="Low">Low</option>
-            </select>
-            <select
+          </PlannerSelect>
+          <PlannerSelect
               value={taskForm.color}
               onChange={(event) => setTaskForm({ ...taskForm, color: event.target.value })}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-3 text-white"
+            className="w-full"
             >
               <option value="sky">Sky</option>
               <option value="emerald">Emerald</option>
               <option value="violet">Violet</option>
               <option value="amber">Amber</option>
-            </select>
+          </PlannerSelect>
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="secondary" type="button" onClick={onClose}>Cancel</Button>
