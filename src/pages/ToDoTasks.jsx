@@ -13,6 +13,7 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const [selectedDate, setSelectedDate] = useState(todayKey())
   const [form, setForm] = useState({ title: '', description: '', date: todayKey(), reminderTime: '', priority: 'Medium', color: 'amber' })
   const [editingId, setEditingId] = useState(null)
+  // Keep quick date chips stable across renders while satisfying React purity expectations.
   const [dateGenerationTimestamp] = useState(() => Date.now())
 
   const visibleTasks = useMemo(() => tasks.filter((task) => task.date === selectedDate), [selectedDate, tasks])
