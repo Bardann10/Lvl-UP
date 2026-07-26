@@ -7,7 +7,7 @@ import { createId } from '../services/storage'
 import { scheduleReminder } from '../services/notifications'
 import { isPastDate, todayKey } from '../utils/date'
 
-const MS_PER_DAY = 86400000
+const MILLISECONDS_PER_DAY = 86400000
 
 export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const [selectedDate, setSelectedDate] = useState(todayKey())
@@ -20,8 +20,8 @@ export function ToDoTasks({ tasks, setTasks, showToast, compact = false }) {
   const quickDateOptions = useMemo(() => {
     return [
       todayKey(),
-      new Date(quickDateSeed + MS_PER_DAY).toISOString().slice(0, 10),
-      new Date(quickDateSeed + 2 * MS_PER_DAY).toISOString().slice(0, 10),
+      new Date(quickDateSeed + MILLISECONDS_PER_DAY).toISOString().slice(0, 10),
+      new Date(quickDateSeed + 2 * MILLISECONDS_PER_DAY).toISOString().slice(0, 10),
     ]
   }, [quickDateSeed])
 
