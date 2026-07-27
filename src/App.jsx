@@ -49,7 +49,7 @@ function AppShell() {
     setData((current) => ({ ...current, achievements: typeof updater === 'function' ? updater(current.achievements || []) : updater }))
   }
 
-  const themeClass = data.theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+  const themeClass = data.theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
   const isDark = data.theme === 'dark'
 
   const addDailyGoalFromQuickAdd = (draft) => {
@@ -86,13 +86,13 @@ function AppShell() {
   }
 
   return (
-    <div className={`min-h-screen ${themeClass}`}>
+    <div className={`app-theme min-h-screen ${themeClass}`}>
       <Navbar />
-      <main className="mx-auto flex max-w-6xl gap-6 px-3 pb-24 pt-6 sm:px-4 lg:px-6 lg:pb-6">
+      <main className="mx-auto flex w-full max-w-6xl gap-5 px-3 pb-24 pt-6 sm:px-4 lg:gap-6 lg:px-6 lg:pb-6">
         <Sidebar>
-          <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3 text-sm text-slate-300">
+          <div className="ui-card p-3 text-sm text-slate-300">
             <p className="font-semibold text-white">Today&apos;s focus</p>
-            <p className="mt-1">Keep your streak strong and your priorities clear.</p>
+            <p className="mt-1 text-slate-400">Keep your streak strong and your priorities clear.</p>
           </div>
         </Sidebar>
         <section className="flex-1">

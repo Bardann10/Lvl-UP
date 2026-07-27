@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createId } from '../services/storage'
+import { PageHeader } from '../components/PageHeader'
 
 const ACHIEVEMENTS = [
   { id: 'first-goal', title: 'First Goal Completed', description: 'Complete your first daily goal.', threshold: 1, icon: 'emoji_events' },
@@ -49,17 +50,18 @@ export function Achievements({ dailyGoals, achievements, setAchievements }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Achievements</p>
-        <h2 className="text-2xl font-semibold text-white">Badges for your consistency</h2>
-      </div>
+      <PageHeader
+        eyebrow="Achievements"
+        title="Badges for your consistency"
+        description="Earn milestone badges as your completion count and streak depth grow over time."
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
         {ACHIEVEMENTS.map((achievement) => {
           const unlocked = (achievements || []).some((item) => item.id === achievement.id)
           const isNew = justUnlocked.includes(achievement.id)
           return (
-            <div key={achievement.id} className={`rounded-3xl border p-4 transition ${unlocked ? 'border-emerald-400/40 bg-emerald-500/10' : 'border-white/10 bg-slate-900/70'} ${isNew ? 'animate-pulse' : ''}`}>
+            <div key={achievement.id} className={`rounded-3xl border p-4 shadow-xl transition ${unlocked ? 'border-emerald-400/40 bg-emerald-500/10 shadow-emerald-950/20' : 'border-white/10 bg-slate-900/70 shadow-slate-950/20'} ${isNew ? 'animate-pulse' : ''}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`rounded-2xl p-2 ${unlocked ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-300'}`}>

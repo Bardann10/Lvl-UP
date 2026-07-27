@@ -12,19 +12,19 @@ export function Sidebar({ children }) {
   const location = useLocation()
 
   return (
-    <aside className="hidden w-72 shrink-0 rounded-[2rem] border border-white/10 bg-slate-900/75 p-4 shadow-2xl shadow-slate-950/30 lg:flex lg:flex-col">
-      <div className="rounded-[1.5rem] bg-gradient-to-br from-sky-500/20 to-violet-500/20 p-4">
-        <p className="text-sm text-slate-300">Focus mode</p>
-        <p className="mt-2 text-xl font-semibold text-white">Stay sharp. Build momentum.</p>
+    <aside className="glass-strong hidden w-72 shrink-0 rounded-[1.7rem] p-4 lg:flex lg:flex-col">
+      <div className="rounded-[1.25rem] border border-sky-300/25 bg-gradient-to-br from-sky-500/22 via-blue-500/10 to-slate-900/70 p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-200">Focus mode</p>
+        <p className="mt-2 text-[1.18rem] font-semibold leading-tight text-white">Stay sharp. Build momentum.</p>
       </div>
 
-      <nav className="mt-5 space-y-2">
+      <nav className="mt-5 space-y-2.5">
         {navItems.map((item) => {
           const active = location.pathname === item.to
           return (
-            <Link key={item.to} to={item.to} className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm transition ${active ? 'bg-sky-500/15 text-sky-300 shadow-lg shadow-sky-500/10' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}>
-              <span className={`material-symbols-outlined ${active ? 'text-sky-300' : 'text-slate-400'}`}>{item.icon}</span>
-              <span className="font-medium">{item.label}</span>
+            <Link key={item.to} to={item.to} className={`group flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm transition ${active ? 'border-sky-300/35 bg-gradient-to-r from-sky-500/24 to-blue-600/10 text-sky-100 shadow-lg shadow-blue-500/20' : 'border-white/5 text-slate-300 hover:border-sky-300/25 hover:bg-white/[0.045] hover:text-white'}`}>
+              <span className={`material-symbols-outlined transition ${active ? 'text-sky-200' : 'text-slate-400 group-hover:text-slate-200'}`}>{item.icon}</span>
+              <span className="font-medium tracking-[0.01em]">{item.label}</span>
             </Link>
           )
         })}

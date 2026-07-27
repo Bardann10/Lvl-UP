@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '../components/Buttons'
+import { PageHeader } from '../components/PageHeader'
 
 export function Settings({ data, setData, saveData, showToast }) {
   const [importText, setImportText] = useState('')
@@ -62,13 +63,14 @@ export function Settings({ data, setData, saveData, showToast }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Settings</p>
-        <h2 className="text-2xl font-semibold text-white">Personalize and protect your data</h2>
-      </div>
+      <PageHeader
+        eyebrow="Settings"
+        title="Personalize and protect your data"
+        description="Control interface preferences, reminders, backups, and resets from one secure place."
+      />
 
       <div className="grid gap-4">
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+        <div className="ui-card p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-lg font-semibold text-white">Dark mode</p>
@@ -78,7 +80,7 @@ export function Settings({ data, setData, saveData, showToast }) {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+        <div className="ui-card p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-lg font-semibold text-white">Notifications</p>
@@ -88,7 +90,7 @@ export function Settings({ data, setData, saveData, showToast }) {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+        <div className="ui-card p-4">
           <p className="text-lg font-semibold text-white">Backup</p>
           <div className="mt-3 flex flex-wrap gap-3">
             <Button type="button" onClick={exportBackup}>Export backup</Button>
@@ -97,7 +99,7 @@ export function Settings({ data, setData, saveData, showToast }) {
           <textarea value={importText} onChange={(event) => setImportText(event.target.value)} className="mt-4 min-h-32 w-full rounded-2xl border border-white/10 bg-slate-950 p-3 text-white" placeholder="Paste exported JSON here" />
         </div>
 
-        <div className="rounded-3xl border border-red-400/30 bg-red-500/10 p-4">
+        <div className="rounded-3xl border border-red-400/35 bg-red-500/12 p-4 shadow-xl shadow-red-950/20">
           <p className="text-lg font-semibold text-white">Reset app</p>
           <p className="mt-2 text-sm text-slate-400">This clears current data from local storage.</p>
           <div className="mt-4">

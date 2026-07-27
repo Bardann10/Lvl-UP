@@ -15,7 +15,7 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={{ showToast: setToast }}>
       {children}
       {toast ? (
-        <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-900 shadow-xl">
+        <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full border border-sky-200/30 bg-slate-900/88 px-4 py-2 text-sm font-medium text-sky-100 shadow-2xl shadow-sky-900/20 backdrop-blur-xl">
           {toast}
         </div>
       ) : null}

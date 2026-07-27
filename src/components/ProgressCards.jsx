@@ -10,7 +10,7 @@ export function ProgressRing({ label, value, accent = 'sky' }) {
   }[accent]
 
   return (
-    <div className="flex flex-col items-center gap-3 rounded-3xl border border-white/10 bg-slate-900/70 p-6">
+    <div className="ui-card flex flex-col items-center gap-3 p-6">
       <div className="relative flex h-32 w-32 items-center justify-center">
         <svg viewBox="0 0 140 140" className="h-32 w-32 -rotate-90">
           <circle cx="70" cy="70" r={radius} stroke="rgba(255,255,255,0.12)" strokeWidth="12" fill="none" />
@@ -21,13 +21,13 @@ export function ProgressRing({ label, value, accent = 'sky' }) {
             strokeWidth="12"
             fill="none"
             strokeLinecap="round"
-            className={fillClass}
+            className={`${fillClass} transition-all duration-500`}
             style={{ strokeDasharray: circumference, strokeDashoffset: offset }}
           />
         </svg>
         <div className="absolute text-center">
-          <p className="text-3xl font-semibold text-white">{Math.round(value)}%</p>
-          <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{label}</p>
+          <p className="text-3xl font-semibold tracking-[-0.03em] text-white">{Math.round(value)}%</p>
+          <p className="text-[11px] uppercase tracking-[0.28em] text-slate-400">{label}</p>
         </div>
       </div>
     </div>

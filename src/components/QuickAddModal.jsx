@@ -29,17 +29,17 @@ export function QuickAddModal({ open, onClose, onAddDailyGoal, onAddTask, showTo
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-950/70 p-4 sm:items-center">
-      <div className="w-full max-w-xl rounded-[2rem] border border-white/10 bg-slate-900 p-5 shadow-2xl shadow-slate-950/40">
+    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-950/78 p-3 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="glass-strong w-full max-w-xl rounded-[1.65rem] p-5 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-400">Quick Add</p>
-            <h3 className="text-xl font-semibold text-white">{title}</h3>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-200">Quick Add</p>
+            <h3 className="mt-1 text-xl font-semibold tracking-[-0.01em] text-white">{title}</h3>
           </div>
-          <button type="button" onClick={onClose} className="rounded-full bg-slate-800 px-3 py-2 text-slate-300">Close</button>
+          <button type="button" onClick={onClose} className="ui-btn ui-btn-secondary rounded-full px-3 py-2">Close</button>
         </div>
 
-        <div className="mt-4 flex gap-2">
+        <div className="mt-5 flex gap-2 rounded-full border border-white/10 bg-slate-950/60 p-1.5">
           <Button variant={mode === 'goal' ? 'primary' : 'secondary'} type="button" onClick={() => setMode('goal')}>Daily Goal</Button>
           <Button variant={mode === 'task' ? 'primary' : 'secondary'} type="button" onClick={() => setMode('task')}>To-Do</Button>
         </div>

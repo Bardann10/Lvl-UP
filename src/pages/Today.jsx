@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from '../components/Buttons'
 import { EmptyState } from '../components/EmptyState'
+import { PageHeader } from '../components/PageHeader'
 import { createId } from '../services/storage'
 
 export function Today({ tasks, setTasks, showToast }) {
@@ -25,13 +26,13 @@ export function Today({ tasks, setTasks, showToast }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-slate-400">Today&apos;s Tasks</p>
-            <h2 className="text-2xl font-semibold text-white">A lightweight checklist for today only</h2>
-          </div>
-        </div>
+      <PageHeader
+        eyebrow="Today"
+        title="A lightweight checklist for today only"
+        description="Capture immediate tasks for today while keeping long-term planning untouched."
+      />
+
+      <div className="ui-card p-5">
         <form onSubmit={addTask} className="mt-5 flex flex-col gap-3 sm:flex-row">
           <input value={form} onChange={(event) => setForm(event.target.value)} className="flex-1 rounded-2xl border border-white/10 bg-slate-950 px-4 py-3 text-white" placeholder="Add task for today" />
           <Button type="submit">Add task</Button>
@@ -43,7 +44,7 @@ export function Today({ tasks, setTasks, showToast }) {
       ) : (
         <div className="grid gap-3">
           {tasks.map((task) => (
-            <div key={task.id} className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+            <div key={task.id} className="ui-card flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
                 <input type="checkbox" checked={task.done} onChange={() => toggleTask(task.id)} className="h-5 w-5 rounded border-slate-600 bg-slate-950" />
                 <p className={`text-lg ${task.done ? 'text-slate-500 line-through' : 'text-white'}`}>{task.title}</p>

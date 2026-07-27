@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { PageHeader } from '../components/PageHeader'
 import { todayKey } from '../utils/date'
 
 export function Statistics({ goals, habits, tasks }) {
@@ -16,10 +17,11 @@ export function Statistics({ goals, habits, tasks }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
-        <p className="text-sm text-slate-400">Statistics</p>
-        <h2 className="text-2xl font-semibold text-white">Your momentum, at a glance</h2>
-      </div>
+      <PageHeader
+        eyebrow="Statistics"
+        title="Your momentum, at a glance"
+        description="Measure consistency trends and streak depth across daily, weekly, monthly, and yearly views."
+      />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
           ['Daily completion', `${Math.round((completedToday / totalHabits) * 100)}%`, 'Today'],
@@ -27,7 +29,7 @@ export function Statistics({ goals, habits, tasks }) {
           ['Monthly completion', `${Math.round((monthly / totalHabits) * 100)}%`, 'This month'],
           ['Yearly completion', `${Math.round((yearly / totalHabits) * 100)}%`, 'This year'],
         ].map(([title, value, description]) => (
-          <div key={title} className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+          <div key={title} className="ui-card p-4">
             <p className="text-sm text-slate-400">{title}</p>
             <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
             <p className="mt-1 text-sm text-slate-500">{description}</p>
@@ -35,7 +37,7 @@ export function Statistics({ goals, habits, tasks }) {
         ))}
       </div>
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
+        <div className="ui-card p-5">
           <p className="text-sm text-slate-400">Streaks</p>
           <div className="mt-3 flex items-center justify-between">
             <div>
@@ -48,12 +50,12 @@ export function Statistics({ goals, habits, tasks }) {
             </div>
           </div>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
+        <div className="ui-card p-5">
           <p className="text-sm text-slate-400">Goal completion</p>
           <p className="mt-2 text-3xl font-semibold text-white">{Math.round((goals.filter((goal) => goal.completed).length / Math.max(goals.length, 1)) * 100)}%</p>
         </div>
       </div>
-      <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-5">
+      <div className="ui-card p-5">
         <p className="text-sm text-slate-400">Activity heat map</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {heatMap.map((cell) => (
