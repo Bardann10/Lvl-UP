@@ -10,6 +10,33 @@ const EMPTY_FORM = {
   targetMonth: '',
 }
 
+function toPositiveNumber(value, fallback = 0) {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) return fallback
+  return Math.max(0, parsed)
+}
+
+function calculatePercent(currentValue, targetValue) {
+  if (targetValue <= 0) return 0
+  return Math.min(100, Math.round((currentValue / targetValue) * 100))
+}
+
+function normalizeYearlyGoal(goal) {
+  const targetValue = toPositiveNumber(goal.targetValue ?? goal.target, 100)
+  const fallbackCurrent = toPositiveNumber(goal.progress, 0)
+  const currentValue = Math.min(toPositiveNumber(goal.currentValue, fallbackCurrent), targetValue)
+  const progress = calculatePercent(currentValue, targetValue)
+
+  return {
+    ...goal,
+    targetValue,
+    target: targetValue,
+    currentValue,
+    progress,
+    completed: progress >= 100,
+  }
+}
+
 export function YearlyGoals({ yearlyGoals, setYearlyGoals, showToast }) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [editingId, setEditingId] = useState(null)
@@ -55,6 +82,24 @@ export function YearlyGoals({ yearlyGoals, setYearlyGoals, showToast }) {
     })
   }, [yearlyGoals])
 
+  useEffect(() => {
+    const normalized = yearlyGoals.map(normalizeYearlyGoal)
+    const hasChanges = normalized.some((goal, index) => {
+      const original = yearlyGoals[index]
+      return (
+        goal.targetValue !== original.targetValue ||
+        goal.target !== original.target ||
+        goal.currentValue !== original.currentValue ||
+        goal.progress !== original.progress ||
+        goal.completed !== original.completed
+      )
+    })
+
+    if (hasChanges) {
+      setYearlyGoals(normalized)
+    }
+  }, [setYearlyGoals, yearlyGoals])
+
   const clearHoldTimer = () => {
     if (holdTimerRef.current) {
       clearTimeout(holdTimerRef.current)
@@ -76,12 +121,15 @@ export function YearlyGoals({ yearlyGoals, setYearlyGoals, showToast }) {
       category: form.category.trim() || 'Growth',
       targetMonth: form.targetMonth || '',
       dueDate,
+      targetValue: 100,
+      currentValue: 0,
+      target: 100,
       progress: 0,
       completed: false,
       createdAt: new Date().toISOString(),
     }
 
-    setYearlyGoals((current) => [...current, nextGoal])
+    setYearlyGoals((current) => [...current, normalizeYearlyGoal(nextGoal)])
     setLastAddedId(nextGoal.id)
     setShowSheet(false)
     setForm(EMPTY_FORM)
@@ -97,7 +145,7 @@ export function YearlyGoals({ yearlyGoals, setYearlyGoals, showToast }) {
     setYearlyGoals((current) =>
       current.map((goal) =>
         goal.id === goalId
-          ? {
+          ? normalizeYearlyGoal({
               ...goal,
               title: payload,
               description,
@@ -105,7 +153,7 @@ export function YearlyGoals({ yearlyGoals, setYearlyGoals, showToast }) {
               category: form.category.trim() || 'Growth',
               targetMonth: form.targetMonth || '',
               dueDate,
-            }
+            })
           : goal,
       ),
     )
@@ -118,7 +166,18 @@ export function YearlyGoals({ yearlyGoals, setYearlyGoals, showToast }) {
 
   const toggleGoal = (goalId) => {
     setYearlyGoals((current) =>
-      current.map((goal) => (goal.id === goalId ? { ...goal, completed: !goal.completed } : goal)),
+      current.map((goal) => {
+        if (goal.id !== goalId) return goal
+
+        const normalized = normalizeYearlyGoal(goal)
+        const completed = !normalized.completed
+        const currentValue = completed ? normalized.targetValue : 0
+
+        return normalizeYearlyGoal({
+          ...normalized,
+          currentValue,
+        })
+      }),
     )
   }
 

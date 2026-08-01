@@ -14,6 +14,7 @@ import { ToastProvider, useToast } from './components/ToastProvider'
 import { Fab } from './components/Fab'
 import { QuickAddModal } from './components/QuickAddModal'
 import { defaultData, loadAppData, saveAppData } from './services/storage'
+import { calculateBestStreakFromHistory, calculateCurrentStreak } from './utils/habitMetrics'
 
 function AppShell() {
   const { showToast } = useToast()
@@ -30,7 +31,18 @@ function AppShell() {
   }, [data])
 
   const setDailyGoals = (updater) => {
-    setData((current) => ({ ...current, dailyGoals: typeof updater === 'function' ? updater(current.dailyGoals) : updater }))
+    setData((current) => {
+      const nextDailyGoals = typeof updater === 'function' ? updater(current.dailyGoals) : updater
+      const currentStreak = calculateCurrentStreak(nextDailyGoals)
+      const historicalBest = calculateBestStreakFromHistory(nextDailyGoals)
+      const nextBestStreak = Math.max(current.bestStreak || 0, currentStreak, historicalBest)
+
+      return {
+        ...current,
+        dailyGoals: nextDailyGoals,
+        bestStreak: nextBestStreak,
+      }
+    })
   }
 
   const setTasks = (updater) => {
@@ -97,7 +109,7 @@ function AppShell() {
         </Sidebar>
         <section className="flex-1">
           <Routes>
-            <Route path="/" element={<Dashboard dailyGoals={data.dailyGoals} tasks={data.tasks} monthlyGoals={data.monthlyGoals} yearlyGoals={data.yearlyGoals} achievements={data.achievements || []} setAchievements={setAchievements} />} />
+            <Route path="/" element={<Dashboard dailyGoals={data.dailyGoals} tasks={data.tasks} monthlyGoals={data.monthlyGoals} yearlyGoals={data.yearlyGoals} achievements={data.achievements || []} setAchievements={setAchievements} bestStreak={data.bestStreak || 0} />} />
             <Route path="/daily-goals" element={<DailyTargets dailyGoals={data.dailyGoals} tasks={data.tasks} setDailyGoals={setDailyGoals} setTasks={setTasks} showToast={showToast} />} />
             <Route path="/monthly-goals" element={<MonthlyGoals monthlyGoals={data.monthlyGoals} setMonthlyGoals={setMonthlyGoals} showToast={showToast} />} />
             <Route path="/yearly-goals" element={<YearlyGoals yearlyGoals={data.yearlyGoals} setYearlyGoals={setYearlyGoals} showToast={showToast} />} />

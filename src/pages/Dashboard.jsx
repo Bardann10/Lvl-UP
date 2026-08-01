@@ -1,33 +1,21 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { todayKey, getTodayLabel } from '../utils/date'
+import { calculateCurrentStreak, calculatePerfectDays } from '../utils/habitMetrics'
 
-export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achievements, setAchievements }) {
+export function Dashboard({ dailyGoals, tasks, monthlyGoals, yearlyGoals, achievements, setAchievements, bestStreak = 0 }) {
+  const today = todayKey()
   const completedHabitsToday = dailyGoals.filter((goal) => goal.completedDates.includes(todayKey())).length
   const completionPercent = Math.round((completedHabitsToday / Math.max(dailyGoals.length, 1)) * 100)
   const monthlyDone = monthlyGoals.filter((goal) => goal.completed).length
   const yearlyDone = yearlyGoals.filter((goal) => goal.completed).length
-  const activeStreak = dailyGoals.reduce((highest, goal) => Math.max(highest, goal.streak || 0), 0)
-  const upcomingTasks = tasks.filter((task) => !task.completed).slice(0, 3)
+  const activeStreak = useMemo(() => calculateCurrentStreak(dailyGoals), [dailyGoals])
+  const upcomingTasks = tasks
+    .filter((task) => !task.completed && task.date >= today)
+    .slice(0, 3)
   const monthlyProgress = useMemo(() => Math.round((monthlyDone / Math.max(monthlyGoals.length, 1)) * 100), [monthlyDone, monthlyGoals.length])
   const yearlyProgress = useMemo(() => Math.round((yearlyDone / Math.max(yearlyGoals.length, 1)) * 100), [yearlyDone, yearlyGoals.length])
-  const perfectDays = useMemo(() => {
-    if (dailyGoals.length === 0) return 0
-    const completionsByDate = new Map()
-
-    dailyGoals.forEach((goal) => {
-      goal.completedDates.forEach((dateKey) => {
-        completionsByDate.set(dateKey, (completionsByDate.get(dateKey) || 0) + 1)
-      })
-    })
-
-    let total = 0
-    completionsByDate.forEach((count) => {
-      if (count === dailyGoals.length) total += 1
-    })
-    return total
-  }, [dailyGoals])
-  const bestStreak = activeStreak
+  const perfectDays = useMemo(() => calculatePerfectDays(dailyGoals), [dailyGoals])
   const dailyPreview = dailyGoals.slice(0, 4)
   const monthlyPreview = monthlyGoals.slice(0, 4)
   const progressRadius = 78

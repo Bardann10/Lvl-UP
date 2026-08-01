@@ -1,20 +1,12 @@
 import { useMemo } from 'react'
 import { todayKey } from '../utils/date'
+import { getCalendarDayStatus } from '../utils/habitMetrics'
 
 function toDateKey(date) {
   const year = date.getFullYear()
   const month = `${date.getMonth() + 1}`.padStart(2, '0')
   const day = `${date.getDate()}`.padStart(2, '0')
   return `${year}-${month}-${day}`
-}
-
-function getDayStatus(dateKey, dailyGoals = []) {
-  if (!dailyGoals.length) return 'grey'
-
-  const completedCount = dailyGoals.filter((goal) => goal.completedDates.includes(dateKey)).length
-  if (completedCount === 0) return 'red'
-  if (completedCount === dailyGoals.length) return 'green'
-  return 'yellow'
 }
 
 export function MonthCalendar({
@@ -73,14 +65,15 @@ export function MonthCalendar({
       <div className="mt-2 grid grid-cols-7 gap-1.5 sm:gap-2">
         {days.map((cell) => {
           const dateKey = toDateKey(cell.date)
-          const status = getDayStatus(dateKey, dailyGoals)
+          const status = getCalendarDayStatus(dateKey, dailyGoals)
           const dayIsToday = dateKey === todayKey()
           const dayIsSelected = dateKey === selectedDate
           const indicatorClasses = {
             green: 'bg-emerald-500',
             yellow: 'bg-amber-400',
             red: 'bg-rose-500',
-            grey: 'bg-slate-700',
+            today: 'bg-transparent',
+            none: 'bg-transparent',
           }[status]
 
           return (

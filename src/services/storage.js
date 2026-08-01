@@ -1,9 +1,12 @@
+import { calculateBestStreakFromHistory } from '../utils/habitMetrics'
+
 const STORAGE_KEY = 'lvl-up-data'
 
 export const defaultData = {
   theme: 'dark',
   notificationsEnabled: true,
   achievements: [],
+  bestStreak: 0,
   dailyGoals: [
     {
       id: 'goal-1',
@@ -43,15 +46,19 @@ export const defaultData = {
 }
 
 function normalizeData(data) {
+  const dailyGoals = Array.isArray(data.dailyGoals)
+    ? data.dailyGoals
+    : Array.isArray(data.habits)
+      ? data.habits
+      : defaultData.dailyGoals
+  const historicalBest = calculateBestStreakFromHistory(dailyGoals)
+
   return {
     theme: data.theme || 'dark',
     notificationsEnabled: data.notificationsEnabled !== false,
     achievements: Array.isArray(data.achievements) ? data.achievements : [],
-    dailyGoals: Array.isArray(data.dailyGoals)
-      ? data.dailyGoals
-      : Array.isArray(data.habits)
-        ? data.habits
-        : defaultData.dailyGoals,
+    bestStreak: Math.max(data.bestStreak || 0, historicalBest),
+    dailyGoals,
     tasks: Array.isArray(data.tasks) ? data.tasks : defaultData.tasks,
     monthlyGoals: Array.isArray(data.monthlyGoals) ? data.monthlyGoals : defaultData.monthlyGoals,
     yearlyGoals: Array.isArray(data.yearlyGoals) ? data.yearlyGoals : defaultData.yearlyGoals,

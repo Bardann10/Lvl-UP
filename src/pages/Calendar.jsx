@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { MonthCalendar } from '../components/MonthCalendar'
 import { PageHeader } from '../components/PageHeader'
 import { formatLongDate, todayKey } from '../utils/date'
+import { calculateCurrentStreak } from '../utils/habitMetrics'
 
 function toDateKey(date) {
   const year = date.getFullYear()
@@ -39,7 +40,7 @@ export function Calendar({ dailyGoals, tasks }) {
     return dailyGoals.length === 0 ? 0 : Math.round((completed / dailyGoals.length) * 100)
   }, [dailyGoals])
 
-  const streaks = useMemo(() => dailyGoals.reduce((max, goal) => Math.max(max, goal.streak || 0), 0), [dailyGoals])
+  const streaks = useMemo(() => calculateCurrentStreak(dailyGoals), [dailyGoals])
 
   const trend = useMemo(() => Array.from({ length: 6 }, (_, index) => {
     const date = new Date()

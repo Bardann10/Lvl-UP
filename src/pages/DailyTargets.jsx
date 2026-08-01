@@ -135,7 +135,6 @@ export function DailyTargets({ dailyGoals, tasks, setDailyGoals, setTasks, showT
         return {
           ...goal,
           completedDates,
-          streak: completedDates.includes(todayKey()) ? (goal.streak || 0) + 1 : Math.max(0, (goal.streak || 0) - 1),
         }
       }),
     )
